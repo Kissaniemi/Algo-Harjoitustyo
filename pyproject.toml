@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "algo-harjoitustyo"
+version = "0.1.0"
+description = ""
+authors = ["Kissaniemi <noora.emilia.koponen@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pylint = "^3.2.7"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+pylint = "^3.2.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
