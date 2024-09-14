@@ -1,5 +1,8 @@
 # Viikko 2
 
-Pelipohjan koodin jatkaminen, voittajan tarkistusfunktio ei vieläkään toimintakunnossa, kehitys jatkuu.
+Pelipohjan koodia jatkettu, voittajan tarkistusfunktio käytössä. Lisätty sille testejä. 
+Siirretty käynnistys app.py:hyn.
 
-Työtunnit: 10h
+Seuraavaksi heuristiikka ja minmax-algoritmi.
+
+Työtunnit: 12h
