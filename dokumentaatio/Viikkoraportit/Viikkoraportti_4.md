@@ -4,3 +4,7 @@ Minmax algoritmia jatkettu, heuristiikkafunktio alustettu, muokattu pelipohjaa, 
 Koodi ei toimintakuntoinen, kaikki pitää saada toimimaan yhdessä ennen kuin pääsee eteenpäin.
 
 Työtunnit: 10h
+
+#### Edit 29.9.24
+
+Koodi ajettavissa, mutta buginen ja tekoäly ei toimi halutusti. Tämän korjausta seuraavaksi.
