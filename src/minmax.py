@@ -1,4 +1,5 @@
 import connect
+from copy import deepcopy
 
 def minmax(board, player, alpha, beta, depth=4):
     """MinMax algorithm (currently without alpha-beta pruning)
@@ -6,8 +7,8 @@ def minmax(board, player, alpha, beta, depth=4):
     with additions based on the minmax algorithm from https://roboticsproject.readthedocs.io/en/latest/ConnectFourAlgorithm.html (Same code also found elsewhere)
     """
 
-    moves = connect.possible_boards(player, board)
-    if not moves:
+    columns = connect.possible_columns(player, board)
+    if not columns:
         return board, 0
     terminal_node = connect.check_full(board)
     opp = 2
@@ -26,34 +27,36 @@ def minmax(board, player, alpha, beta, depth=4):
     if player == 2:  # Max player
         value = float("-inf")
         best_move = None
-        for move in moves:
-            _, new_value = minmax(move[0], 1, alpha, beta, depth -1)
+        for column in columns:
+            new_board, _ = connect.drop_piece(player, deepcopy(board), column)
+            _, new_value = minmax(new_board, 1, alpha, beta, depth -1)
             if new_value > value:
                 value = new_value
-                best_move = move[1]
+                best_move = column
             alpha = max(alpha, value)
             if alpha >= beta:
                 break
 
         if best_move == None:
-            best_move = move[1]   
-
+            middle_move = len(columns)//2
+            best_move = columns[middle_move]
         return best_move, value
     
     else: # Min player
         value = float("inf")
         best_move = None
-        for move in moves:    
-            _, new_value = minmax(move[0], 2, alpha, beta, depth -1)
+        for column in columns:   
+            new_board, _ = connect.drop_piece(player, deepcopy(board), column)
+            _, new_value = minmax(new_board, 1, alpha, beta, depth -1)
             if new_value < value:
                 value = new_value
-                best_move = move[1]
+                best_move = column
             beta = min(beta, value)
             if beta <= alpha:
                 break
         
         if best_move == None:
-            best_move = move[1]
-
+            middle_move = len(columns)//2
+            best_move = columns[middle_move]
         return best_move, value
 

@@ -1,9 +1,11 @@
 
+
 from minmax import minmax
 from copy import deepcopy
 
 def ui_start():
-    board =[[0,0,0,0,0,0,0],
+    board = [
+           [0,0,0,0,0,0,0],
            [0,0,0,0,0,0,0],
            [0,0,0,0,0,0,0],
            [0,0,0,0,0,0,0],
@@ -14,13 +16,16 @@ def ui_start():
     if ai_player == "yes":
         player = input("Choose if you want to go first or second (1/2): ")
         if int(player) == 2:
+            print_board(board)
+            print(" ")
+            print("AI making move")
             playing_stage(player, board, True, True)
         else:
             print_board(board)
             playing_stage(player, board, True, False)
         
     elif ai_player == "no":
-        print("Chose to not play against AI")
+        print("Choose to not play against AI")
         player = input("Choose player 1 or player 2 by writing '1' or '2' : ")
         if player == "1" or player == "2":
             print(f"{player} chosen")  
@@ -50,7 +55,7 @@ def playing_stage(player, board, ai=False, ai_turn=False):
             print("Invalid placement") 
             playing_stage(player, board)
     
-        new_board, rtn_col = drop_piece(int(player), board, int(column))
+        new_board, rtn_col = drop_piece(int(player), board, int(column)-1)
         
         if new_board == False:
             print("Invalid placement")
@@ -81,9 +86,8 @@ def playing_stage(player, board, ai=False, ai_turn=False):
     else:
 
         best_move, value = minmax(board, player, float("-inf"), float("inf"))
-     
-        new_board, column = drop_piece(player, board, best_move+1)
-
+        new_board, column = drop_piece(player, board, best_move)
+ 
         print_board(new_board)
 
         if check_winner(board, column, player):
@@ -102,21 +106,21 @@ def playing_stage(player, board, ai=False, ai_turn=False):
             playing_stage(1, new_board, True)
 
 
-def possible_boards(player, board):
-    boards = []
+def possible_columns(player, board):
+    columns = []
     for i in range(1,8):
-        new_board, column = drop_piece(player, deepcopy(board), i)
+        new_board, column = drop_piece(player, deepcopy(board), i-1)
         if new_board != False:
-            boards.append((new_board, column))
-    return boards
+            columns.append(column)
+    return columns
 
 
 def drop_piece(player, board, column):
-    
+
     for row in reversed(board):
-        if row[column-1] == 0:
-            row[column-1] = int(player)
-            return deepcopy(board), column-1 # Return row in backwards order
+        if row[column] == 0:
+            row[column] = int(player)
+            return deepcopy(board), column
     else:
         return False, None
     
@@ -137,7 +141,7 @@ def print_board(board):
 
 def check_top(board, column):
     row_count = -6
-    for i in range(0,5):
+    for i in range(0,6):
         if board[i][column] != 0:
             return row_count
         row_count += 1
@@ -207,7 +211,7 @@ def check_winner(board, column, player):
                                 if board[r+3][c-3] == player:
                                     count += 1
 
-                    while c <= 6 and -6 <= r and board[r][c] == player:
+                    while 0 <= c <= 6 and -6 <= r <=-1 and board[r][c] == player: 
                         count +=1
                         r -= 1
                         c += 1
@@ -224,7 +228,7 @@ def check_winner(board, column, player):
                                 if board[r+3][c+3] == player:
                                     count += 1
 
-                    while c <= 6 and -6 <= r and board[r][c] == player:
+                    while 0 <= c <= 6 and -6 <= r <=-1 and board[r][c] == player: 
                         count +=1
                         r -= 1
                         c -= 1
@@ -241,7 +245,7 @@ def check_winner(board, column, player):
                                 if board[r-3][c-3] == player:
                                     count += 1
 
-                    while c <= 6 and -6 <= r and board[r][c] == player:
+                    while 0 <= c <= 6 and -6 <= r <=-1 and board[r][c] == player: 
                         count +=1
                         r += 1
                         c += 1
@@ -259,7 +263,7 @@ def check_winner(board, column, player):
                                 if board[r-3][c+3] == player:
                                     count += 1
 
-                    while c <= 6 and -6 <= r and board[r][c] == player:             
+                    while 0 <= c <= 6 and -6 <= r <=-1 and board[r][c] == player:             
                         count +=1
                         r += 1
                         c -= 1
@@ -278,13 +282,12 @@ def score_position(board, player):
         no_break = 0
         for i in range(-5,0):
             if board[i][3] == 0:
-                score += 100
+                score += 50
             elif board[i][3] == player:
                 score += 100
                 no_break += 1
             else:
                 no_break = 0
-
         score += no_break * 4
 
 
@@ -316,8 +319,6 @@ def score_position(board, player):
             for c in range(7-3):
                 crow = [board[r+3-i][c+i] for i in range(4)]
                 score += evaluate(crow, player)
-        
-        #print(score)
          
         return score
 
@@ -332,15 +333,18 @@ def evaluate(row, player):
     opp_point = 0
     blanks = 0
     between = False
+
     for i in range(len(row)):
         if row[i] == player:
             no_break += 1
             opp_point = 0
+
         if row[i] == opp:
             no_break = 0
             opp_point += 1
             blanks = 0
             between = False
+
         else:
             blanks += 1
             if opp_point == 0:
@@ -349,19 +353,18 @@ def evaluate(row, player):
     if no_break == 4:
         score += 10000
     if no_break == 3:
-        score += 10
+        score += 50
         if between == True:
             score += 1000       
     if no_break == 2:
         if blanks > 1:
-            score += 5
+            score += 50
 
     if opp_point == 4:
         score -= 10000
     if opp_point == 3:
-        score -= 10
+        score -= 1000
     if opp_point == 2:
-        score -= 5
+        score -= 100
 
     return score
-
