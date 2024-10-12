@@ -3,20 +3,20 @@ from minmax import minmax
 from copy import deepcopy
 
 def ui_start():
-    board = [
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0], 
-            [0,0,0,0,0,0,0]]
+    board =[[0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0],
+           [0,0,0,0,0,0,0]]
     
-    ai_player = input("Choose if you want to play against AI or not (yes/no): ")  # AI/minmax not yet available
+    ai_player = input("Choose if you want to play against AI or not (yes/no): ")
     if ai_player == "yes":
         player = input("Choose if you want to go first or second (1/2): ")
         if int(player) == 2:
             playing_stage(player, board, True, True)
         else:
+            print_board(board)
             playing_stage(player, board, True, False)
         
     elif ai_player == "no":
@@ -38,6 +38,7 @@ def ui_start():
 
 
 def playing_stage(player, board, ai=False, ai_turn=False):
+
     if ai_turn == False:
         print(f"Player {player} turn ")
         column = input("Choose column 1-7 to drop a piece there: ")
@@ -79,9 +80,9 @@ def playing_stage(player, board, ai=False, ai_turn=False):
 
     else:
 
-        best_move, value = minmax(board, player)
+        best_move, value = minmax(board, player, float("-inf"), float("inf"))
      
-        new_board, column = drop_piece(player, board, best_move)
+        new_board, column = drop_piece(player, board, best_move+1)
 
         print_board(new_board)
 
@@ -136,10 +137,11 @@ def print_board(board):
 
 def check_top(board, column):
     row_count = -6
-    for i in range(0,6):
+    for i in range(0,5):
         if board[i][column] != 0:
             return row_count
         row_count += 1
+    return False
 
 
 def check_winner(board, column, player):
@@ -150,112 +152,141 @@ def check_winner(board, column, player):
                     )   # No need to check up directions since the last added piece is always on top
 
     row = check_top(board, column)
- 
-    for dc, dr in directions:
-        count = 0
-        r = row+dr
-        c = column+dc
+    
+    if row:
+        for dc, dr in directions:
+            count = 0
+            r = row+dr
+            c = column+dc
 
-        if -6 <= r < 0 and 0 <= c < 7:
-            # Check down vertical ( 0, -1)  
-            if r == row-1 and c == column:
-                count = 0
-                while -6 <= r and board[r+1][c] == player:
-                    count += 1
-                    r += 1
-            
-            # Check left horizontal  <- ( -1, 0)
-            elif r == row and c == column-1:
-                count = 0
-                if board[r][c+1] == player:
-                    count += 1
-                    if board[r][c+2] == player:
+            if -6 <= r < 0 and 0 <= c < 7:
+                # Check down vertical ( 0, -1)  
+                if r == row-1 and c == column:
+                    count = 0
+                    while -6 <= r and board[r+1][c] == player and r+1 < 0:
                         count += 1
-
-                while 0 <= c and board[r][c] == player:
-                    count += 1
-                    c -= 1
-
-            # Check right horizontal -> ( 1, 0)
-            elif r == row and c == column+1:
-                count = 0
-                if board[r][c-1] == player:
-                    count += 1
-                    if board[r][c-2] == player:
-                        count += 1
-
-                while c <= 6 and board[r][c] == player:
-                    count += 1
-                    c += 1
-
-            # Check up right diagonal ( 1, 1)
-            elif r == row-1 and c == column+1:
-                count = 1
-                if board[r+2][c-2] == player:
-                    count += 1
-                    if board[r+3][c-3] == player:
-                        count += 1
+                        r += 1
                 
-                while c <= 6 and -6 <= r and board[r][c] == player:
-                    count +=1
-                    r -= 1
-                    c += 1
-                
-            # Check up left diagonal ( -1, 1)
-            elif r == row-1 and c == column-1:
-                count = 1
-                if board[r+2][c+2] == player:
-                    count += 1
-                    if board[r+3][c+3] == player:
+                # Check left horizontal  <- ( -1, 0)
+                elif r == row and c == column-1:
+                    count = 0
+                    if c+1 < 7:
+                        if board[r][c+1] == player:
+                            count += 1
+                            if c+2 < 7:
+                                if board[r][c+2] == player:
+                                    count += 1
+
+                    while 0 <= c and board[r][c] == player:
                         count += 1
-                        
-                while c <= 6 and -6 <= r and board[r][c] == player:
-                    count +=1
-                    r -= 1
-                    c -= 1
+                        c -= 1
 
-            # Check down right diagonal ( 1, -1)
-            elif r == row+1 and c == column+1:
-                count = 1
-                if board[r-2][c-2] == player:
-                    count += 1
-                    if board[r-3][c-3] == player:
+
+                # Check right horizontal -> ( 1, 0)
+                elif r == row and c == column+1:
+                    count = 0
+                    if 0 < c-1:
+                        if board[r][c-1] == player:
+                            count += 1
+                            if 0 < c-2:
+                                if board[r][c-2] == player:
+                                    count += 1
+
+                    while c <= 6 and board[r][c] == player:
                         count += 1
+                        c += 1
 
-                while c <= 6 and -6 <= r and board[r][c] == player:
-                    count +=1
-                    r += 1
-                    c += 1
 
-            # Check down left diagonal ( -1, -1)
-            elif r == row+1 and c == column-1:
-                count = 1
-                if board[r-2][c+2] == player:
-                    count += 1
-                    if board[r-3][c+3] == player:
-                        count += 1
+                # Check up right diagonal ( 1, 1)
+                elif r == row-1 and c == column+1:
+                    count = 1
+                    if 0 < c-2 and r+2 < 0:
+                        if board[r+2][c-2] == player:
+                            count += 1
+                            if 0 < c-3 and r+3 < 0:
+                                if board[r+3][c-3] == player:
+                                    count += 1
 
-                while c <= 6 and -6 <= r and board[r][c] == player:
-                    count +=1
-                    r += 1
-                    c -= 1
+                    while c <= 6 and -6 <= r and board[r][c] == player:
+                        count +=1
+                        r -= 1
+                        c += 1
+                        if c > 6 and -6 > r:
+                            break
+                    
+                # Check up left diagonal ( -1, 1)
+                elif r == row-1 and c == column-1:
+                    count = 1
+                    if c+2 < 7 and r+2 < 0:
+                        if board[r+2][c+2] == player:
+                            count += 1
+                            if c+3 < 7 and r+3 < 0:
+                                if board[r+3][c+3] == player:
+                                    count += 1
 
-            if count >= 4:
-                return True
-    return False 
+                    while c <= 6 and -6 <= r and board[r][c] == player:
+                        count +=1
+                        r -= 1
+                        c -= 1
+                        if c > 6 and -6 > r:
+                            break
+
+                # Check down right diagonal ( 1, -1)
+                elif r == row+1 and c == column+1:
+                    count = 0
+                    if 0 < c-2 and -6 < r-2:
+                        if board[r-2][c-2] == player:
+                            count += 1
+                            if 0 < c-3 and -6 < r-3:
+                                if board[r-3][c-3] == player:
+                                    count += 1
+
+                    while c <= 6 and -6 <= r and board[r][c] == player:
+                        count +=1
+                        r += 1
+                        c += 1
+                        if c > 6 and -6 > r:
+                            break
+
+
+                # Check down left diagonal ( -1, -1)
+                elif r == row+1 and c == column-1:
+                    count = 1
+                    if c+2 < 7 and -6 < r-2:
+                        if board[r-2][c+2] == player:
+                            count += 1
+                            if c+3 < 7 and -6 < r-3:
+                                if board[r-3][c+3] == player:
+                                    count += 1
+
+                    while c <= 6 and -6 <= r and board[r][c] == player:             
+                        count +=1
+                        r += 1
+                        c -= 1
+                        if c > 6 and -6 > r:
+                            break
+
+                if count >= 4:
+                    return True
+        return False 
 
 
 def score_position(board, player):
         score = 0
-        center_row = []
 
-        # Score center column
-        for i in range(0,6):
-          center_row.append(board[i][3])
-        
-        #print(center_row)
-        center_count = center_row.count(player)
-        score += center_count * 4
+        # Score center column 3
+        no_break = 0
+        for i in range(-5,0):
+            if board[i][3] == 0:
+                score += 100
+            elif board[i][3] == player:
+                score += 100
+                no_break += 1
+            else:
+                no_break = 0
+
+        score += no_break * 4
+
 
         # Score horizontal
         for r in range(6):
@@ -263,8 +294,8 @@ def score_position(board, player):
             for i in range(7):
                 row.append(board[r][i])
             for c in range(7-3):
-                window = row[c:c+4]
-                score += evaluate(window, player)
+                crow = row[c:c+4]
+                score += evaluate(crow, player)
         
         # Score vertical
         for c in range(7):
@@ -272,19 +303,19 @@ def score_position(board, player):
             for i in range(6):
                 col.append(board[i][c])
             for r in range(6-3):
-                window = col[r:r+4]
-                score += evaluate(window, player)
+                crow = col[r:r+4]
+                score += evaluate(crow, player)
 
         # Score diagonal
         for r in range(6-3):
             for c in range(7-3):
-                window = [board[r+i][c+i] for i in range(4)]
-                score += evaluate(window, player)
+                crow = [board[r+i][c+i] for i in range(4)]
+                score += evaluate(crow, player)
 
         for r in range(6-3):
             for c in range(7-3):
-                window = [board[r+3-i][c+i] for i in range(4)]
-                score += evaluate(window, player)
+                crow = [board[r+3-i][c+i] for i in range(4)]
+                score += evaluate(crow, player)
         
         #print(score)
          
@@ -296,19 +327,41 @@ def evaluate(row, player):
     opp = 2
     if player == 2:
         opp = 1
-
-    if row.count(player) == 4:
-        score += 10000
-    if row.count(player) == 3 and row.count(0) == 1:
-        score += 10
-    if row.count(player) == 2 and row.count(0) == 2:
-        score += 3
     
-    if row.count(opp) == 4:
+    no_break = 0
+    opp_point = 0
+    blanks = 0
+    between = False
+    for i in range(len(row)):
+        if row[i] == player:
+            no_break += 1
+            opp_point = 0
+        if row[i] == opp:
+            no_break = 0
+            opp_point += 1
+            blanks = 0
+            between = False
+        else:
+            blanks += 1
+            if opp_point == 0:
+                between = True
+
+    if no_break == 4:
+        score += 10000
+    if no_break == 3:
+        score += 10
+        if between == True:
+            score += 1000       
+    if no_break == 2:
+        if blanks > 1:
+            score += 5
+
+    if opp_point == 4:
         score -= 10000
-    if row.count(opp) == 3 and row.count(0) == 1:
+    if opp_point == 3:
         score -= 10
-    if row.count(opp) == 2 and row.count(0) == 2:
+    if opp_point == 2:
         score -= 5
 
     return score
+

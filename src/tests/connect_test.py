@@ -65,16 +65,3 @@ class TestConnect(unittest.TestCase):
         self.assertEqual(True, check_winner(board, -1, 4, 1))
         board[-3][2] = 0
         self.assertEqual(False, check_winner(board, -1, 4, 1))
-
-
-
-
-
-    
-
-    
-
-
-
-
-
