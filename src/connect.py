@@ -1,17 +1,19 @@
-
-
 from minmax import minmax
 from copy import deepcopy
+from collections import deque
 
 def ui_start():
+    """Basic game start ui, "menu"
+    """
     board = [
-           [0,0,0,0,0,0,0],
-           [0,0,0,0,0,0,0],
-           [0,0,0,0,0,0,0],
-           [0,0,0,0,0,0,0],
-           [0,0,0,0,0,0,0],
-           [0,0,0,0,0,0,0]]
-    
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0]
+            ]
+
     ai_player = input("Choose if you want to play against AI or not (yes/no): ")
     if ai_player == "yes":
         player = input("Choose if you want to go first or second (1/2): ")
@@ -43,7 +45,8 @@ def ui_start():
 
 
 def playing_stage(player, board, ai=False, ai_turn=False):
-
+    """Game playing stage ui
+    """
     if ai_turn == False:
         print(f"Player {player} turn ")
         column = input("Choose column 1-7 to drop a piece there: ")
@@ -55,7 +58,7 @@ def playing_stage(player, board, ai=False, ai_turn=False):
             print("Invalid placement") 
             playing_stage(player, board)
     
-        new_board, rtn_col = drop_piece(int(player), board, int(column)-1)
+        new_board = drop_piece(int(player), board, int(column)-1)
         
         if new_board == False:
             print("Invalid placement")
@@ -86,11 +89,11 @@ def playing_stage(player, board, ai=False, ai_turn=False):
     else:
 
         best_move, value = minmax(board, player, float("-inf"), float("inf"))
-        new_board, column = drop_piece(player, board, best_move)
+        new_board = drop_piece(player, board, best_move)
  
         print_board(new_board)
 
-        if check_winner(board, column, player):
+        if check_winner(board, best_move, player):
             print(f"Winner was player {player}!")
             print(" ")
             ui_start()
@@ -107,25 +110,49 @@ def playing_stage(player, board, ai=False, ai_turn=False):
 
 
 def possible_columns(player, board):
-    columns = []
-    for i in range(1,8):
-        new_board, column = drop_piece(player, deepcopy(board), i-1)
+    """Generates and returns list of possible columns, uses drop_piece function to evaluate if column is free for a move
+    """
+    columns = deque()
+    for i in range(0,7):
+        new_board = drop_piece(player, deepcopy(board), i)
         if new_board != False:
-            columns.append(column)
-    return columns
+                columns.append(i)
+    if len(columns) == 1:
+        return columns
+    elif len(columns) == 2:
+        return reversed(columns)
+    order_columns = preferred_order(columns)
+    return order_columns
+
+
+def preferred_order(columns):
+    """Orders given list of columns so that the middle columns are first moving "outwards" 
+       (middle moves preferred, since most likely the best move)
+    """
+    middle_move = len(columns)//2
+    new_order = deque()
+    new_order.append(columns[middle_move])
+    for i in range(1, middle_move+1):
+        new_order.append(columns[middle_move -i])
+        if len(columns) % 2 != 0:
+            new_order.append(columns[middle_move +i])
+    return new_order
 
 
 def drop_piece(player, board, column):
-
+    """Changes and returns given column on the board where first move possible, returns False otherwise
+    """
     for row in reversed(board):
         if row[column] == 0:
             row[column] = int(player)
-            return deepcopy(board), column
+            return deepcopy(board)
     else:
-        return False, None
+        return False
     
 
 def check_full(board):
+    """Checks top row of board to see if board is full,
+       (no need to check lower rows, since top row is always last to get filled)"""
     for i in board[0]:
         if i == 0:
             return False
@@ -133,6 +160,7 @@ def check_full(board):
 
 
 def print_board(board):
+    """Prints board on display"""
     print( )
     for row in board:
         print(row)
@@ -140,22 +168,23 @@ def print_board(board):
 
 
 def check_top(board, column):
+    """Returns the top row of given column"""
     row_count = -6
     for i in range(0,6):
         if board[i][column] != 0:
             return row_count
         row_count += 1
-    return False
 
 
 def check_winner(board, column, player):
+    """Checks if the last move was a winning move, True if yes, False if now"""
     directions = (
                         ( -1, 1),             ( 1, 1),
                         ( -1, 0),             ( 1, 0),
                         ( -1, -1), ( 0, -1),  ( 1, -1),
                     )   # No need to check up directions since the last added piece is always on top
 
-    row = check_top(board, column)
+    row = check_top(board, column) # returns the row columns last move was made to
     
     if row:
         for dc, dr in directions:
@@ -276,54 +305,58 @@ def check_winner(board, column, player):
 
 
 def score_position(board, player):
-        score = 0
+    """Board value heuristics, takes sections from boards rows and passes them to the evaluate function
+    """
+    score = 0
 
-        # Score center column 3
-        no_break = 0
-        for i in range(-5,0):
-            if board[i][3] == 0:
-                score += 50
-            elif board[i][3] == player:
-                score += 100
-                no_break += 1
-            else:
-                no_break = 0
-        score += no_break * 4
+    # Score center column extra
+    no_break = 0
+    for i in range(-5,0):
+        if board[i][3] == 0:
+            score += 50
+        elif board[i][3] == player:
+            score += 100
+            no_break += 1
+        else:
+            no_break = 0
+    score += no_break * 4
 
 
-        # Score horizontal
-        for r in range(6):
-            row = []
-            for i in range(7):
-                row.append(board[r][i])
-            for c in range(7-3):
-                crow = row[c:c+4]
-                score += evaluate(crow, player)
+    # Score horizontal
+    for r in range(6):
+        row = []
+        for i in range(7):
+            row.append(board[r][i])
+        for c in range(7-3):
+            section = row[c:c+4]
+            score += evaluate(section, player)
+    
+    # Score vertical
+    for c in range(7):
+        col = []
+        for i in range(6):
+            col.append(board[i][c])
+        for r in range(6-3):
+            section = col[r:r+4]
+            score += evaluate(section, player)
+
+    # Score diagonal
+    for r in range(6-3):
+        for c in range(7-3):
+            section = [board[r+i][c+i] for i in range(4)]
+            score += evaluate(section, player)
+
+    for r in range(6-3):
+        for c in range(7-3):
+            section = [board[r+3-i][c+i] for i in range(4)]
+            score += evaluate(section, player)
         
-        # Score vertical
-        for c in range(7):
-            col = []
-            for i in range(6):
-                col.append(board[i][c])
-            for r in range(6-3):
-                crow = col[r:r+4]
-                score += evaluate(crow, player)
-
-        # Score diagonal
-        for r in range(6-3):
-            for c in range(7-3):
-                crow = [board[r+i][c+i] for i in range(4)]
-                score += evaluate(crow, player)
-
-        for r in range(6-3):
-            for c in range(7-3):
-                crow = [board[r+3-i][c+i] for i in range(4)]
-                score += evaluate(crow, player)
-         
-        return score
+    return score
 
 
-def evaluate(row, player):
+def evaluate(section, player):
+    """Evaluates given section for player vs opponent
+    """
     score = 0
     opp = 2
     if player == 2:
@@ -334,12 +367,12 @@ def evaluate(row, player):
     blanks = 0
     between = False
 
-    for i in range(len(row)):
-        if row[i] == player:
+    for i in range(len(section)):
+        if section[i] == player:
             no_break += 1
             opp_point = 0
 
-        if row[i] == opp:
+        if section[i] == opp:
             no_break = 0
             opp_point += 1
             blanks = 0
@@ -358,13 +391,14 @@ def evaluate(row, player):
             score += 1000       
     if no_break == 2:
         if blanks > 1:
-            score += 50
+            score += 100
 
     if opp_point == 4:
         score -= 10000
     if opp_point == 3:
         score -= 1000
     if opp_point == 2:
-        score -= 100
+        score -= 150
 
     return score
+

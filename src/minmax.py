@@ -1,7 +1,7 @@
 import connect
 from copy import deepcopy
 
-def minmax(board, player, alpha, beta, depth=4):
+def minmax(board, player, alpha, beta, depth=6):
     """MinMax algorithm (currently without alpha-beta pruning)
     based on the wikipedia pseudocode for minmax algorithm https://en.wikipedia.org/wiki/Minimax, 
     with additions based on the minmax algorithm from https://roboticsproject.readthedocs.io/en/latest/ConnectFourAlgorithm.html (Same code also found elsewhere)
@@ -28,7 +28,7 @@ def minmax(board, player, alpha, beta, depth=4):
         value = float("-inf")
         best_move = None
         for column in columns:
-            new_board, _ = connect.drop_piece(player, deepcopy(board), column)
+            new_board = connect.drop_piece(player, deepcopy(board), column)
             _, new_value = minmax(new_board, 1, alpha, beta, depth -1)
             if new_value > value:
                 value = new_value
@@ -46,7 +46,7 @@ def minmax(board, player, alpha, beta, depth=4):
         value = float("inf")
         best_move = None
         for column in columns:   
-            new_board, _ = connect.drop_piece(player, deepcopy(board), column)
+            new_board = connect.drop_piece(player, deepcopy(board), column)
             _, new_value = minmax(new_board, 1, alpha, beta, depth -1)
             if new_value < value:
                 value = new_value
