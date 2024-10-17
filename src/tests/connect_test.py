@@ -40,6 +40,16 @@ class TestConnect(unittest.TestCase):
         board[-4][0] = 1
         self.assertEqual(True, check_winner(board,  0, 1))
 
+    def test_vertical_check_top(self):
+        board = [
+            [2, 0, 1, 0, 0, 0, 0],
+            [2, 0, 1, 0, 2, 0, 0],
+            [1, 0, 1, 0, 1, 0, 0],
+            [2, 2, 1, 2, 1, 0, 0],
+            [2, 2, 2, 1, 2, 1, 0],
+            [2, 2, 1, 2, 1, 1, 0]]
+        self.assertEqual(True, check_winner(board,  2, 1))
+
     def test_diagonal_right_check(self):
         board = [
             [0,0,0,0,0,0,0],

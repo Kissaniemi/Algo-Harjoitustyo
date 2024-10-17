@@ -1,7 +1,7 @@
 import connect
 from copy import deepcopy
 
-def minmax(board, player, alpha, beta, depth=6):
+def minmax(board, player, alpha, beta, depth=4):
     """MinMax algorithm (currently without alpha-beta pruning)
     based on the wikipedia pseudocode for minmax algorithm https://en.wikipedia.org/wiki/Minimax, 
     with additions based on the minmax algorithm from https://roboticsproject.readthedocs.io/en/latest/ConnectFourAlgorithm.html (Same code also found elsewhere)
@@ -23,7 +23,7 @@ def minmax(board, player, alpha, beta, depth=6):
             for i in range(0,7):
                 if connect.check_winner(board, i, player):
                     return board, float("-inf") if player == 1 else float("inf")
-                if connect.check_winner(board, i, opp):
+                elif connect.check_winner(board, i, opp):
                     return board, float("inf") if player == 1 else float("-inf")
                 
             return board, connect.score_position(board, player)

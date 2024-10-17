@@ -89,6 +89,7 @@ def playing_stage(player, board, ai=False, ai_turn=False):
     else:
 
         best_move, value = minmax(board, player, float("-inf"), float("inf"))
+        print(value)
         new_board = drop_piece(player, board, best_move)
  
         print_board(new_board)
@@ -177,7 +178,7 @@ def check_winner(board, column, player):
     directions = (
                         ( -1, 1),             ( 1, 1),
                         ( -1, 0),             ( 1, 0),
-                        ( -1, -1), ( 0, -1),  ( 1, -1),
+                        ( -1, -1), ( 0, 1),  ( 1, -1),
                     )   # No need to check up directions since the last added piece is always on top
 
     row = check_top(board, column) # returns the row columns last move was made to
@@ -190,12 +191,12 @@ def check_winner(board, column, player):
 
             if -6 <= r < 0 and 0 <= c < 7:
                 # Check down vertical ( 0, -1)  
-                if r == row-1 and c == column:
-                    count = 0
-                    while -6 <= r and board[r+1][c] == player and r+1 < 0:
+                if r == row+1 and c == column:
+                    count = 1
+                    while -6 <= r and board[r][c] == player:
                         count += 1
                         r += 1
-                
+ 
                 # Check left horizontal  <- ( -1, 0)
                 elif r == row and c == column-1:
                     count = 0
@@ -314,6 +315,7 @@ def score_position(board, player):
             score += 100
             no_break += 1
         else:
+            score -= 100
             no_break = 0
     score += no_break * 4
 
