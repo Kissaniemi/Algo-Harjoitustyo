@@ -117,12 +117,7 @@ def possible_columns(player, board):
         new_board = drop_piece(player, deepcopy(board), i)
         if new_board != False:
                 columns.append(i)
-    if len(columns) == 1:
-        return columns
-    elif len(columns) == 2:
-        return reversed(columns)
-    order_columns = preferred_order(columns)
-    return order_columns
+    return columns
 
 
 def preferred_order(columns):
@@ -152,7 +147,7 @@ def drop_piece(player, board, column):
 
 def check_full(board):
     """Checks top row of board to see if board is full,
-       (no need to check lower rows, since top row is always last to get filled)"""
+       (no need to check lower rows, since top row is always last to get filled in game)"""
     for i in board[0]:
         if i == 0:
             return False
@@ -174,6 +169,7 @@ def check_top(board, column):
         if board[i][column] != 0:
             return row_count
         row_count += 1
+    return 0
 
 
 def check_winner(board, column, player):

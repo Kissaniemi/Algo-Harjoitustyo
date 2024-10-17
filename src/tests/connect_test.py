@@ -1,9 +1,15 @@
 import unittest
-from connect import check_winner
+from collections import deque
+from connect import check_winner, possible_columns, preferred_order, drop_piece, check_full, check_top
 
 class TestConnect(unittest.TestCase):
     def setUp(self):
-        pass
+        self.board =[[0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0], 
+                    [0,0,0,0,0,0,0]]
 
     def test_horizonal_check(self):
         board = [
@@ -65,3 +71,72 @@ class TestConnect(unittest.TestCase):
         self.assertEqual(True, check_winner(board,  4, 1))
         board[-3][2] = 0
         self.assertEqual(False, check_winner(board,  4, 1))
+
+    
+    def test_possible_columns(self):
+        board = self.board
+        self.assertEqual(deque([0,1,2,3,4,5,6]), possible_columns(1, board))
+
+    def test_preferred_order(self):
+        columns = deque([0,1,2,3,4,5,6])
+        self.assertEqual(deque([3,2,4,1,5,0,6]), preferred_order(columns))
+
+    def test_drop_piece(self):
+        board = self.board
+        compare_board = [[0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0],
+                        [0,0,0,0,0,0,0], 
+                        [0,0,0,1,0,0,0]]
+        self.assertEqual(compare_board, drop_piece(1, board, 3))
+
+    def test_drop_piece_false(self):
+        board = [[0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0], 
+                [0,0,0,1,0,0,0]]
+        self.assertEqual(False, drop_piece(1, board, 3))
+
+    def test_check_full(self):
+        board = [[1,1,1,1,1,1,1],
+                [0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0], 
+                [0,0,0,1,0,0,0]]
+        self.assertEqual(True, check_full(board))
+
+
+    def test_check_full_false(self):
+        board = self.board
+        self.assertEqual(False, check_full(board))
+
+    def test_check_top(self):
+        board = [[0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0], 
+                [0,0,0,1,0,0,0]]
+        self.assertEqual(-4, check_top(board,3))
+
+    def test_check_top_top(self):
+        board = [[0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0],
+                [0,0,0,1,0,0,0], 
+                [0,0,0,1,0,0,0]]
+        self.assertEqual(-6, check_top(board,3))
+
+    def test_check_top_bottom(self):
+        board = [[0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0], 
+                [0,0,0,0,0,0,0]]
+        self.assertEqual(0, check_top(board,3))
