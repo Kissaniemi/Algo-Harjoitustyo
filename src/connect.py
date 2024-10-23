@@ -21,10 +21,10 @@ def ui_start():
             print_board(board)
             print(" ")
             print("AI making move")
-            playing_stage(player, board, True, True)
+            playing_stage(2, board, True, True)
         else:
             print_board(board)
-            playing_stage(player, board, True, False)
+            playing_stage(1, board, True, False)
         
     elif ai_player == "no":
         print("Choose to not play against AI")
@@ -66,7 +66,7 @@ def playing_stage(player, board, ai=False, ai_turn=False):
         
         print_board(new_board)
 
-        if check_winner(board, int(column)-1, player):
+        if check_winner(new_board, int(column)-1, player):
             print(f"Winner was player {player}!")
             print(" ")
             ui_start()
@@ -81,33 +81,26 @@ def playing_stage(player, board, ai=False, ai_turn=False):
             else:
                 playing_stage(1, new_board)
         else:
-            if int(player) == 1:
-                playing_stage(2, new_board, True, True)
-            else:
-                playing_stage(1, new_board, True, True)
+            playing_stage(2, new_board, True, True)
 
     else:
 
-        best_move, value = minmax(board, player, float("-inf"), float("inf"))
+        best_move, value = minmax(board, 2, float("-inf"), float("inf"))
         print(value)
-        new_board = drop_piece(player, board, best_move)
+        new_board = drop_piece(2, board, best_move)
  
         print_board(new_board)
 
-        if check_winner(board, best_move, player):
-            print(f"Winner was player {player}!")
+        if check_winner(new_board, best_move, 2):
+            print(f"Winner was AI!")
             print(" ")
             ui_start()
         
-        if check_full(board):
+        elif check_full(board):
             print(f"Board full, no winners!")
             ui_start()
          
-
-        if int(player) == 1:
-            playing_stage(2, new_board, True)
-        else:
-            playing_stage(1, new_board, True)
+        playing_stage(1, new_board, True)
 
 
 def possible_columns(player, board):
@@ -158,9 +151,22 @@ def check_full(board):
 def print_board(board):
     """Prints board on display"""
     print( )
+    
     for row in board:
-        print(row)
-    print(" 1  2  3  4  5  6  7")
+        one_row = []
+        one_row.append("|")
+        for slot in row:
+            if slot == 1:
+                one_row.append("○")
+            elif slot == 2:
+                one_row.append("●")
+            else:
+                one_row.append(" ")
+            one_row.append("|")
+        
+        print(' '.join(str(x) for x in one_row))
+        print("-----------------------------")
+    print("  1   2   3   4   5   6   7")
 
 
 def check_top(board, column):
@@ -182,123 +188,122 @@ def check_winner(board, column, player):
                     )   # No need to check up directions since the last added piece is always on top
 
     row = check_top(board, column) # returns the row columns last move was made to
-    
-    if row:
-        for dc, dr in directions:
-            count = 0
-            r = row+dr
-            c = column+dc
 
-            if -6 <= r < 0 and 0 <= c < 7:
-                # Check down vertical ( 0, -1)  
-                if r == row+1 and c == column:
-                    count = 1
-                    while -6 <= r and board[r][c] == player:
+    for dc, dr in directions:
+        count = 0
+        r = row+dr
+        c = column+dc
+
+        if -6 <= r < 0 and 0 <= c < 7:
+            # Check down vertical ( 0, -1)  
+            if r == row+1 and c == column:
+                count = 1
+                while -6 <= r and board[r][c] == player:
+                    count += 1
+                    r += 1
+
+            # Check left horizontal  <- ( -1, 0)
+            elif r == row and c == column-1:
+                count = 0
+                if c+1 < 7:
+                    if board[r][c+1] == player:
                         count += 1
-                        r += 1
- 
-                # Check left horizontal  <- ( -1, 0)
-                elif r == row and c == column-1:
-                    count = 0
-                    if c+1 < 7:
-                        if board[r][c+1] == player:
-                            count += 1
-                            if c+2 < 7:
-                                if board[r][c+2] == player:
-                                    count += 1
+                        if c+2 < 7:
+                            if board[r][c+2] == player:
+                                count += 1
 
-                    while 0 <= c and board[r][c] == player:
+                while 0 <= c and board[r][c] == player:
+                    count += 1
+                    c -= 1
+
+
+            # Check right horizontal -> ( 1, 0)
+            elif r == row and c == column+1:
+                count = 0
+                if 0 < c-1:
+                    if board[r][c-1] == player:
                         count += 1
-                        c -= 1
+                        if 0 < c-2:
+                            if board[r][c-2] == player:
+                                count += 1
+
+                while c <= 6 and board[r][c] == player:
+                    count += 1
+                    c += 1
 
 
-                # Check right horizontal -> ( 1, 0)
-                elif r == row and c == column+1:
-                    count = 0
-                    if 0 < c-1:
-                        if board[r][c-1] == player:
-                            count += 1
-                            if 0 < c-2:
-                                if board[r][c-2] == player:
-                                    count += 1
-
-                    while c <= 6 and board[r][c] == player:
+            # Check up right diagonal ( 1, 1)
+            elif r == row-1 and c == column+1:
+                count = 1
+                if 0 < c-2 and r+2 < 0:
+                    if board[r+2][c-2] == player:
                         count += 1
-                        c += 1
+                        if 0 < c-3 and r+3 < 0:
+                            if board[r+3][c-3] == player:
+                                count += 1
+
+                while 0 <= c <= 6 and -6 <= r <=-1 and board[r][c] == player: 
+                    count +=1
+                    r -= 1
+                    c += 1
+                    if c > 6 and -6 > r:
+                        break
+                
+            # Check up left diagonal ( -1, 1)
+            elif r == row-1 and c == column-1:
+                count = 1
+                if c+2 < 7 and r+2 < 0:
+                    if board[r+2][c+2] == player:
+                        count += 1
+                        if c+3 < 7 and r+3 < 0:
+                            if board[r+3][c+3] == player:
+                                count += 1
+
+                while 0 <= c <= 6 and -6 <= r <=-1 and board[r][c] == player: 
+                    count +=1
+                    r -= 1
+                    c -= 1
+                    if c > 6 and -6 > r:
+                        break
+
+            # Check down right diagonal ( 1, -1)
+            elif r == row+1 and c == column+1:
+                count = 0
+                if 0 < c-2 and -6 < r-2:
+                    if board[r-2][c-2] == player:
+                        count += 1
+                        if 0 < c-3 and -6 < r-3:
+                            if board[r-3][c-3] == player:
+                                count += 1
+
+                while 0 <= c <= 6 and -6 <= r <=-1 and board[r][c] == player: 
+                    count +=1
+                    r += 1
+                    c += 1
+                    if c > 6 and -6 > r:
+                        break
 
 
-                # Check up right diagonal ( 1, 1)
-                elif r == row-1 and c == column+1:
-                    count = 1
-                    if 0 < c-2 and r+2 < 0:
-                        if board[r+2][c-2] == player:
-                            count += 1
-                            if 0 < c-3 and r+3 < 0:
-                                if board[r+3][c-3] == player:
-                                    count += 1
+            # Check down left diagonal ( -1, -1)
+            elif r == row+1 and c == column-1:
+                count = 1
+                if c+2 < 7 and -6 < r-2:
+                    if board[r-2][c+2] == player:
+                        count += 1
+                        if c+3 < 7 and -6 < r-3:
+                            if board[r-3][c+3] == player:
+                                count += 1
 
-                    while 0 <= c <= 6 and -6 <= r <=-1 and board[r][c] == player: 
-                        count +=1
-                        r -= 1
-                        c += 1
-                        if c > 6 and -6 > r:
-                            break
-                    
-                # Check up left diagonal ( -1, 1)
-                elif r == row-1 and c == column-1:
-                    count = 1
-                    if c+2 < 7 and r+2 < 0:
-                        if board[r+2][c+2] == player:
-                            count += 1
-                            if c+3 < 7 and r+3 < 0:
-                                if board[r+3][c+3] == player:
-                                    count += 1
+                while 0 <= c <= 6 and -6 <= r <=-1 and board[r][c] == player:             
+                    count +=1
+                    r += 1
+                    c -= 1
+                    if c > 6 and -6 > r:
+                        break
 
-                    while 0 <= c <= 6 and -6 <= r <=-1 and board[r][c] == player: 
-                        count +=1
-                        r -= 1
-                        c -= 1
-                        if c > 6 and -6 > r:
-                            break
-
-                # Check down right diagonal ( 1, -1)
-                elif r == row+1 and c == column+1:
-                    count = 0
-                    if 0 < c-2 and -6 < r-2:
-                        if board[r-2][c-2] == player:
-                            count += 1
-                            if 0 < c-3 and -6 < r-3:
-                                if board[r-3][c-3] == player:
-                                    count += 1
-
-                    while 0 <= c <= 6 and -6 <= r <=-1 and board[r][c] == player: 
-                        count +=1
-                        r += 1
-                        c += 1
-                        if c > 6 and -6 > r:
-                            break
-
-
-                # Check down left diagonal ( -1, -1)
-                elif r == row+1 and c == column-1:
-                    count = 1
-                    if c+2 < 7 and -6 < r-2:
-                        if board[r-2][c+2] == player:
-                            count += 1
-                            if c+3 < 7 and -6 < r-3:
-                                if board[r-3][c+3] == player:
-                                    count += 1
-
-                    while 0 <= c <= 6 and -6 <= r <=-1 and board[r][c] == player:             
-                        count +=1
-                        r += 1
-                        c -= 1
-                        if c > 6 and -6 > r:
-                            break
-
-                if count >= 4:
-                    return True
-        return False 
+            if count >= 4:
+                return True
+    return False 
 
 
 def score_position(board, player):
@@ -389,7 +394,7 @@ def evaluate(section, player):
             score += 1000       
     if no_break == 2:
         if blanks > 1:
-            score += 100
+            score += 150
 
     if opp_point == 4:
         score -= 10000

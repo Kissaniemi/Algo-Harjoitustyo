@@ -48,7 +48,7 @@ def minmax(board, player, alpha, beta, depth=4):
         best_move = columns[0]
         for column in columns:   
             new_board = connect.drop_piece(player, deepcopy(board), column)
-            _, new_value = minmax(new_board, 1, alpha, beta, depth -1)
+            _, new_value = minmax(new_board, 2, alpha, beta, depth -1)
             if new_value < value:
                 value = new_value
                 best_move = column
@@ -57,4 +57,3 @@ def minmax(board, player, alpha, beta, depth=4):
                 break
         
         return best_move, value
-
