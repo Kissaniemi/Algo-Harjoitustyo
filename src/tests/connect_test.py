@@ -1,6 +1,8 @@
 import unittest
 from collections import deque
-from connect import check_winner, possible_columns, preferred_order, drop_piece, check_full, check_top
+from connect import check_winner, possible_columns, preferred_order, drop_piece, check_full, check_top, \
+                    check_winner_vertical, check_winner_horizontal_left, check_winner_horizontal_right, check_winner_up_right, \
+                    check_winner_down_left, check_winner_down_right, check_winner_up_left
 
 class TestConnect(unittest.TestCase):
     def setUp(self):
@@ -11,116 +13,41 @@ class TestConnect(unittest.TestCase):
                     [0,0,0,0,0,0,0], 
                     [0,0,0,0,0,0,0]]
 
-    def test_horizonal_check(self):
-        board = [
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0], 
-            [1,1,1,0,0,0,0]]
-        self.assertEqual(False, check_winner(board, 0, 1))
-        board[-1][4] = 1
-        self.assertEqual(False, check_winner(board,  0, 1))
-        board[-1][3] = 1
-        self.assertEqual(True, check_winner(board,  3, 1))
-        self.assertEqual(True, check_winner(board,  2, 1))
-        self.assertEqual(True, check_winner(board,  1, 1))
-        self.assertEqual(True, check_winner(board,  0, 1))
+    """possible_columns tests"""
 
-    def test_vertical_check(self):
-        board = [
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [1,0,0,0,0,0,0],
-            [1,0,0,0,0,0,0], 
-            [1,0,0,0,0,0,0]]
-        self.assertEqual(False, check_winner(board,  0, 1))
-        board[-4][0] = 1
-        self.assertEqual(True, check_winner(board,  0, 1))
-
-    def test_vertical_check_2(self):
-        board = [
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,2,0,0,0],
-            [0,0,0,2,0,0,0],
-            [0,0,0,2,0,0,0], 
-            [0,0,0,2,0,0,0]]
-        self.assertEqual(True, check_winner(board, 3, 2))
-
-    def test_vertical_check_top(self):
-        board = [
-            [2, 0, 1, 0, 0, 0, 0],
-            [2, 0, 1, 0, 2, 0, 0],
-            [1, 0, 1, 0, 1, 0, 0],
-            [2, 2, 1, 2, 1, 0, 0],
-            [2, 2, 2, 1, 2, 1, 0],
-            [2, 2, 1, 2, 1, 1, 0]]
-        self.assertEqual(True, check_winner(board,  2, 1))
-
-    def test_diagonal_right_check(self):
-        board = [
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,1,0,0,0,0],
-            [0,1,0,0,0,0,0], 
-            [1,0,0,0,0,0,0]]
-        self.assertEqual(False, check_winner(board,  0, 1))
-        board[-5][4] = 1
-        self.assertEqual(False, check_winner(board,  0, 1))
-        board[-4][3] = 1
-        self.assertEqual(True, check_winner(board,  0, 1))
-        board[-3][2] = 0
-        self.assertEqual(False, check_winner(board,  0, 1))
-
-    def test_diagonal_left_check(self):
-        board = [
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,1,0,0,0,0],
-            [0,0,0,1,0,0,0], 
-            [0,0,0,0,1,0,0]]
-        self.assertEqual(False, check_winner(board,  4, 1))
-        board[-5][0] = 1
-        self.assertEqual(False, check_winner(board,  4, 1))
-        board[-4][1] = 1
-        self.assertEqual(True, check_winner(board,  4, 1))
-        board[-3][2] = 0
-        self.assertEqual(False, check_winner(board,  4, 1))
-
-    def test_diagonal_left_check_2(self):
-        board = [
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,2,0,0,0,0],
-            [0,0,1,2,0,0,0],
-            [0,0,0,1,2,0,0], 
-            [0,0,0,0,1,2,0]]
-        self.assertEqual(True, check_winner(board, 6, 2))
-
-    def test_diagonal_left_check_2(self):
-        board = [
-            [0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0],
-            [0,0,2,0,0,0,0],
-            [0,0,1,2,0,0,0],
-            [0,0,0,1,2,0,0], 
-            [0,0,0,0,1,2,0]]
-        self.assertEqual(True, check_winner(board, 3, 2))
-
-
-
-    def test_possible_columns(self):
+    def test_possible_columns_all(self):
         board = self.board
         self.assertEqual(deque([0,1,2,3,4,5,6]), possible_columns(1, board))
 
+    def test_possible_columns_some(self):
+        board = [[0,0,0,1,2,0,2],
+                [0,0,0,2,1,0,2],
+                [0,0,0,2,2,0,1],
+                [0,0,0,2,1,1,1],
+                [0,0,0,2,1,2,2], 
+                [0,0,0,1,2,2,1]]
+        self.assertEqual(deque([0,1,2,5]), possible_columns(1, board))
+
+    def test_possible_columns_none(self):
+        board = [[2,1,1,1,2,1,2],
+                [2,1,2,2,1,2,2],
+                [2,1,1,2,2,1,1],
+                [1,2,2,2,1,1,1],
+                [1,1,1,2,1,2,2], 
+                [1,2,2,1,2,2,1]]
+        self.assertEqual(deque(), possible_columns(1, board))
+
+    """preferred order tests"""
+
     def test_preferred_order(self):
         columns = deque([0,1,2,3,4,5,6])
-        self.assertEqual(deque([3,2,4,1,5,0,6]), preferred_order(columns))
+        self.assertEqual(deque([4,3,2,0,1,5,6]), preferred_order(columns))
+
+    def test_preferred_order_2(self):
+        columns = deque([0,1,2,3,5])
+        self.assertEqual(deque([3,2,0,1,5]), preferred_order(columns))
+
+    """drop_piece tests"""
 
     def test_drop_piece(self):
         board = self.board
@@ -140,6 +67,8 @@ class TestConnect(unittest.TestCase):
                 [0,0,0,1,0,0,0], 
                 [0,0,0,1,0,0,0]]
         self.assertEqual(False, drop_piece(1, board, 3))
+    
+    """check_full tests"""
 
     def test_check_full(self):
         board = [[1,1,1,1,1,1,1],
@@ -150,10 +79,11 @@ class TestConnect(unittest.TestCase):
                 [0,0,0,1,0,0,0]]
         self.assertEqual(True, check_full(board))
 
-
     def test_check_full_false(self):
         board = self.board
         self.assertEqual(False, check_full(board))
+
+    """check_top tests"""
 
     def test_check_top(self):
         board = [[0,0,0,0,0,0,0],
@@ -181,3 +111,170 @@ class TestConnect(unittest.TestCase):
                 [0,0,0,0,0,0,0], 
                 [0,0,0,0,0,0,0]]
         self.assertEqual(0, check_top(board,3))
+
+    def test_check_top_first_row(self):
+        board = [[0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0], 
+                [0,0,0,2,0,0,0]]
+        self.assertEqual(-1, check_top(board,3))
+
+    """check_winner tests"""
+
+    def test_vertical_check(self):
+        board = [
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [1,0,0,0,0,0,0],
+            [1,0,0,0,0,0,0], 
+            [1,0,0,0,0,0,0]]
+        self.assertEqual(False, check_winner_vertical(board,  0, -3, 1))
+        board[-4][0] = 1
+        self.assertEqual(True, check_winner_vertical(board,  0, -4, 1))
+
+    def test_vertical_check_top(self):
+        board = [
+            [2, 0, 1, 0, 0, 0, 0],
+            [2, 0, 1, 0, 2, 0, 0],
+            [1, 0, 1, 0, 1, 0, 0],
+            [2, 2, 1, 2, 1, 0, 0],
+            [2, 2, 2, 1, 2, 1, 0],
+            [2, 2, 1, 2, 1, 1, 0]]
+        self.assertEqual(True, check_winner_vertical(board,  2, -6, 1))
+
+    def test_horizontal_check_down(self):
+        board = [
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0], 
+            [1,1,1,0,0,0,0]]
+        self.assertEqual(False, check_winner_horizontal_left(board, 2, -1, 1))
+        self.assertEqual(False, check_winner_horizontal_right(board, 1, -1, 1))
+        self.assertEqual(False, check_winner_horizontal_right(board, 0, -1, 1))
+        board[-1][4] = 1
+        board[-1][3] = 1
+        self.assertEqual(True, check_winner_horizontal_left(board,  3, -1, 1))
+        self.assertEqual(True, check_winner_horizontal_left(board,  2, -1, 1))
+        self.assertEqual(True, check_winner_horizontal_right(board,  1, -1, 1))
+        self.assertEqual(True, check_winner_horizontal_right(board,  0, -1, 1))
+
+    def test_horizontal_check_top(self):
+        board = [
+            [0,0,0,1,1,1,1],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0], 
+            [0,0,0,0,0,0,0]]
+        self.assertEqual(True, check_winner_horizontal_left(board,  6, -6, 1))
+        self.assertEqual(True, check_winner_horizontal_left(board,  5, -6, 1))
+        self.assertEqual(True, check_winner_horizontal_right(board, 4, -6, 1))
+        self.assertEqual(True, check_winner_horizontal_right(board, 3, -6, 1))
+        board[-6][3] = 0
+        board[-6][2] = 1
+        self.assertEqual(False, check_winner_horizontal_left(board,  2, -6, 1))
+        self.assertEqual(False, check_winner_horizontal_right(board, 1, -6, 1))
+        self.assertEqual(False, check_winner_horizontal_right(board, 0, -6, 1))
+    
+
+    def test_diagonal_check_down_1(self):
+        board = [
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,0,0,1,0,0,0],
+            [0,0,1,0,0,0,0],
+            [0,1,0,0,0,0,0], 
+            [1,0,0,0,0,0,0]]
+        self.assertEqual(True, check_winner_up_right(board,  0, -1, 1))
+        self.assertEqual(True, check_winner_up_right(board,  1, -2, 1))
+        self.assertEqual(True, check_winner_down_left(board,  2, -3, 1))
+        self.assertEqual(True, check_winner_down_left(board,  3, -4, 1))
+        board[-3][2] = 0
+        self.assertEqual(False, check_winner_up_right(board,  0, -1, 1))
+        self.assertEqual(False, check_winner_up_right(board,  1, -2, 1))
+        self.assertEqual(False, check_winner_down_left(board,  3, -4, 1))
+
+    def test_diagonal_check_down_2(self):
+        board = [
+            [0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0],
+            [0,1,0,0,0,0,0],
+            [0,0,1,0,0,0,0],
+            [0,0,0,1,0,0,0], 
+            [0,0,0,0,1,0,0]]
+        self.assertEqual(True, check_winner_up_left(board,  4, -1, 1))
+        self.assertEqual(True, check_winner_up_left(board,  3, -2, 1))
+        self.assertEqual(True, check_winner_down_right(board,  2, -3, 1))
+        self.assertEqual(True, check_winner_down_right(board,  1, -4, 1))
+        board[-3][2] = 0
+        self.assertEqual(False, check_winner_up_left(board,  4, -1, 1))
+        self.assertEqual(False, check_winner_up_left(board,  3, -2, 1))
+        self.assertEqual(False, check_winner_down_right(board,  1, -4, 1))
+
+    def test_diagonal_check_up_1(self):
+        board =     [[0,0,0,2,0,0,0],
+                    [0,0,0,0,2,0,0],
+                    [0,0,0,0,0,2,0],
+                    [0,0,0,0,0,0,2],
+                    [0,0,0,0,0,0,0], 
+                    [0,0,0,0,0,0,0]]
+        self.assertEqual(True, check_winner_up_left(board,  6, -3, 2))
+        self.assertEqual(True, check_winner_up_left(board,  5, -4, 2))
+        self.assertEqual(True, check_winner_down_right(board,  4, -5, 2))
+        self.assertEqual(True, check_winner_down_right(board,  3, -6, 2))
+        board[-5][4] = 0
+        self.assertEqual(False, check_winner_up_left(board,  6, -3, 2))
+        self.assertEqual(False, check_winner_up_left(board,  5, -4, 2))
+        self.assertEqual(False, check_winner_down_right(board,  3, -6, 2))
+
+    def test_diagonal_check_up_2(self):
+        board =     [[0,0,0,0,0,0,2],
+                    [0,0,0,0,0,2,0],
+                    [0,0,0,0,2,0,0],
+                    [0,0,0,2,0,0,0],
+                    [0,0,0,0,0,0,0], 
+                    [0,0,0,0,0,0,0]]
+        self.assertEqual(True, check_winner_up_right(board,  3, -3, 2))
+        self.assertEqual(True, check_winner_up_right(board,  4, -4, 2))
+        self.assertEqual(True, check_winner_down_left(board,  5, -5, 2))
+        self.assertEqual(True, check_winner_down_left(board,  6, -6, 2))
+        board[-4][4] = 0
+        self.assertEqual(False, check_winner_up_right(board,  3, -3, 2))
+        self.assertEqual(False, check_winner_down_left(board,  5, -5, 2))
+        self.assertEqual(False, check_winner_down_left(board,  6, -6, 2))
+
+    def test_diagonal_check_up_3(self):
+        board =     [[0,0,0,0,0,0,0],
+                    [0,0,0,0,0,2,0],
+                    [0,0,0,0,2,0,0],
+                    [0,0,0,2,0,0,0],
+                    [0,0,2,0,0,0,0], 
+                    [0,0,0,0,0,0,0]]
+        self.assertEqual(True, check_winner_up_right(board,  2, -2, 2))
+        self.assertEqual(True, check_winner_up_right(board,  3, -3, 2))
+        self.assertEqual(True, check_winner_down_left(board,  4, -4, 2))
+        self.assertEqual(True, check_winner_down_left(board,  5, -5, 2))
+            
+    def test_full_check_winner(self):
+        board = [
+            [2, 0, 1, 0, 0, 0, 0],
+            [2, 0, 1, 0, 2, 0, 0],
+            [1, 0, 1, 0, 1, 0, 0],
+            [2, 2, 1, 2, 1, 0, 0],
+            [2, 2, 2, 1, 2, 1, 0],
+            [2, 2, 1, 2, 1, 1, 0]]
+        self.assertEqual(True, check_winner(board,  2, 1))
+
+    def test_full_check_no_winner(self):
+        board =     [[0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0],
+                    [0,0,0,0,0,0,0], 
+                    [0,0,0,1,0,0,0]]
+        self.assertEqual(False, check_winner(board, 3, 1))

@@ -8,29 +8,15 @@ def minmax(board, player, alpha, beta, depth=4):
     """
 
     columns = connect.possible_columns(player, board)
-    if len(columns) < 2:
+    if len(columns) > 3:
         columns = connect.preferred_order(columns)
 
-    if not columns:
-        return board, 0
-    
-    terminal_node = connect.check_full(board)
-    opp = 2
-    if player == 2:
-        opp = 1
-
-    if depth == 0 or terminal_node:
-            for i in range(0,7):
-                if connect.check_winner(board, i, player):
-                    return board, float("-inf") if player == 1 else float("inf")
-                elif connect.check_winner(board, i, opp):
-                    return board, float("inf") if player == 1 else float("-inf")
-                
-            return board, connect.score_position(board, player)
+    if depth == 0 or len(columns) == 0:  
+        return board, connect.score_position(board, player)
     
     if player == 2:  # Max player
         value = float("-inf")
-        best_move = columns[0]
+        best_move = None
         for column in columns:
             new_board = connect.drop_piece(player, deepcopy(board), column)
             _, new_value = minmax(new_board, 1, alpha, beta, depth -1)
@@ -45,7 +31,7 @@ def minmax(board, player, alpha, beta, depth=4):
     
     else: # Min player
         value = float("inf")
-        best_move = columns[0]
+        best_move = None
         for column in columns:   
             new_board = connect.drop_piece(player, deepcopy(board), column)
             _, new_value = minmax(new_board, 2, alpha, beta, depth -1)
