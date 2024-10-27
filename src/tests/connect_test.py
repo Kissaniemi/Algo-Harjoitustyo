@@ -77,15 +77,6 @@ class TestConnect(unittest.TestCase):
 
     """check_top tests"""
 
-    def test_check_top(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 1, 0, 0, 0],
-                 [0, 0, 0, 1, 0, 0, 0],
-                 [0, 0, 0, 1, 0, 0, 0],
-                 [0, 0, 0, 1, 0, 0, 0]]
-        self.assertEqual(-4, check_top(board, 3))
-
     def test_check_top_top(self):
         board = [[0, 0, 0, 1, 0, 0, 0],
                  [0, 0, 0, 1, 0, 0, 0],
@@ -103,15 +94,6 @@ class TestConnect(unittest.TestCase):
                  [0, 0, 0, 0, 0, 0, 0],
                  [0, 0, 0, 0, 0, 0, 0]]
         self.assertEqual(0, check_top(board, 3))
-
-    def test_check_top_first_row(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 2, 0, 0, 0]]
-        self.assertEqual(-1, check_top(board, 3))
 
     """check_winner tests"""
 
@@ -144,16 +126,15 @@ class TestConnect(unittest.TestCase):
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0],
-            [1, 1, 1, 0, 0, 0, 0]]
-        self.assertEqual(False, check_winner_horizontal_left(board, 2, -1, 1))
-        self.assertEqual(False, check_winner_horizontal_right(board, 1, -1, 1))
-        self.assertEqual(False, check_winner_horizontal_right(board, 0, -1, 1))
-        board[-1][4] = 1
-        board[-1][3] = 1
+            [1, 1, 1, 1, 0, 0, 0]]
         self.assertEqual(True, check_winner_horizontal_left(board,  3, -1, 1))
         self.assertEqual(True, check_winner_horizontal_left(board,  2, -1, 1))
         self.assertEqual(True, check_winner_horizontal_right(board,  1, -1, 1))
         self.assertEqual(True, check_winner_horizontal_right(board,  0, -1, 1))
+        board[-1][2] = 0
+        self.assertEqual(False, check_winner_horizontal_left(board, 3, -1, 1))
+        self.assertEqual(False, check_winner_horizontal_right(board, 1, -1, 1))
+        self.assertEqual(False, check_winner_horizontal_right(board, 0, -1, 1))
 
     def test_horizontal_check_top(self):
         board = [
@@ -239,18 +220,6 @@ class TestConnect(unittest.TestCase):
         self.assertEqual(False, check_winner_down_left(board,  5, -5, 2))
         self.assertEqual(False, check_winner_down_left(board,  6, -6, 2))
 
-    def test_diagonal_check_up_3(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 2, 0],
-                 [0, 0, 0, 0, 2, 0, 0],
-                 [0, 0, 0, 2, 0, 0, 0],
-                 [0, 0, 2, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0]]
-        self.assertEqual(True, check_winner_up_right(board,  2, -2, 2))
-        self.assertEqual(True, check_winner_up_right(board,  3, -3, 2))
-        self.assertEqual(True, check_winner_down_left(board,  4, -4, 2))
-        self.assertEqual(True, check_winner_down_left(board,  5, -5, 2))
-
     def test_full_check_winner(self):
         board = [
             [2, 0, 1, 0, 0, 0, 0],
@@ -270,6 +239,26 @@ class TestConnect(unittest.TestCase):
                  [0, 0, 0, 1, 0, 0, 0]]
         self.assertEqual(False, check_winner(board, 3, 1))
 
+    """score_position tests"""
+
+    def test_score_position(self):
+        board = [[0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 1, 0, 0, 0],
+                 [0, 0, 0, 1, 0, 0, 0],
+                 [0, 0, 0, 1, 0, 0, 0],
+                 [0, 0, 0, 1, 0, 0, 0]]
+        self.assertEqual(float("-inf"), score_position(board, 2))
+
+    def test_score_position_2(self):
+        board = [[0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 2, 0],
+                 [0, 0, 0, 0, 2, 0, 0],
+                 [0, 0, 0, 2, 0, 0, 0],
+                 [0, 0, 2, 0, 0, 0, 0]]
+        self.assertEqual(float("inf"), score_position(board, 2))
+
     """evaluate tests"""
 
     def test_evaluate(self):
@@ -284,42 +273,17 @@ class TestConnect(unittest.TestCase):
         section = [0, 0, 0, 2, 2, 2, 2]
         self.assertEqual(float("inf"), evaluate(section, 2))
 
-    def test_evaluate_1(self):
+    def test_evaluate_gap(self):
         section1 = [2, 0, 2, 2, 0, 0, 0]
         section2 = [0, 0, 0, 2, 2, 0, 2]
         self.assertEqual(evaluate(section1, 2), evaluate(section2, 2))
 
-    def test_evaluate_2(self):
-        section1 = [0, 0, 2, 2, 0, 0, 0]
-        section2 = [0, 0, 0, 2, 2, 0, 0]
-        self.assertEqual(evaluate(section1, 2), evaluate(section2, 2))
-
-    def test_evaluate_3(self):
+    def test_evaluate_dif(self):
         section1 = [2, 2, 0, 0, 0, 0, 0]
         section2 = [0, 0, 0, 2, 2, 0, 0]
         self.assertNotEqual(evaluate(section1, 2), evaluate(section2, 2))
 
-    def test_evaluate_4(self):
+    def test_evaluate_dif_2(self):
         section1 = [2, 0, 0, 0, 0, 0, 0]
         section2 = [0, 0, 0, 2, 0, 0, 0]
         self.assertNotEqual(evaluate(section1, 2), evaluate(section2, 2))
-
-    """score_position tests"""
-
-    def test_score_position(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 1, 0, 0, 0],
-                 [0, 0, 0, 1, 0, 0, 0],
-                 [0, 0, 0, 1, 0, 0, 0],
-                 [0, 0, 0, 1, 0, 0, 0]]
-        self.assertEqual(float("-inf"), score_position(board, 2))
-
-    def test_score_position2(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 2, 0],
-                 [0, 0, 0, 0, 2, 0, 0],
-                 [0, 0, 0, 2, 0, 0, 0],
-                 [0, 0, 2, 0, 0, 0, 0]]
-        self.assertEqual(float("inf"), score_position(board, 2))

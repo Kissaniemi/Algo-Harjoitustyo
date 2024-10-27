@@ -119,7 +119,7 @@ def print_board(board):
     """Prints board on display"""
     print()
     for row in board:
-        print_row = []
+        print_row = deque()
         print_row.append("|")
         for slot in row:
             if slot == 1:
@@ -375,44 +375,41 @@ def evaluate(section, player):
     if player == 2:
         opp = 1
 
-    no_break = 0
+    own_point = 0
     opp_point = 0
     blanks = 0
-    between = False
 
     for i in section:
-        if no_break >= 4:
-            score += float("inf")
+        if own_point >= 4:
+            return float("inf")
+
+        if opp_point >= 4:
+            return float("-inf")
+
         if i == player:
-            no_break += 1
-            opp_point = 0
+            own_point += 1
+            if opp_point != 0:
+                opp_point = 0
+                blanks = 0
 
         if i == opp:
-            no_break = 0
             opp_point += 1
-            blanks = 0
-            between = False
-
+            if own_point != 0:
+                own_point = 0
+                blanks = 0
         else:
             blanks += 1
-            if opp_point == 0:
-                between = True
 
-    if no_break >= 4:
-        score += float("inf")
-        return score
-    if no_break == 3:
+    if own_point >= 4:
+        return float("inf")
+    if own_point == 3:
         score += 100000
-        if between is True:
-            score += 1000
-    if no_break == 2:
+    if own_point == 2:
         if blanks > 1:
             score += 150
 
     if opp_point == 4:
-        score += float("-inf")
-        return score
-
+        return float("-inf")
     if opp_point == 3:
         score -= 10000
     if opp_point == 2:

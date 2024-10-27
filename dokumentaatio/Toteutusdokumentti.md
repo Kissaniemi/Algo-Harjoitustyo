@@ -1,3 +1,4 @@
+# Koodin toteutus 
 
 ## Lähteet
 
@@ -5,10 +6,26 @@ Projektin tekemiseen ei ole käytetty laajoja kielimalleja. Minmax funktion sove
 
 ## Funktioiden aika- ja tilavaativuudet
 
+### minmax.py
+Minmax algoritmin pitäisi toimia alussa määritellyn mukaisesti pahimmillaan O(b^m) ajassa ja ideaalitilanteessa O(b^m/2) ajassa, missä b merkitsee mahdollisten siirtojen määrää ja m syvyyttä. Mahdollisia siirtoja on maksimissaan 7 ja syvyydeksi on asetettu 4, eli O(7⁴) Tämän lisäksi minmax algoritmi käyttää kolmea connect.py:n funktiota: possible_columns, score_position, drop_piece.
+Näistä possible_columns vie aikaa O(n), jossa n arvo on pelilaudan rivien määrä 6, eli O(6). Drop_piece funktion aikavaativuus on myös O(n), jossa n on sarakkeitten määrä 7, eli O(7).
+Score_position aikavaativuus on score vertical silmukan takia O(7^2). Funktio kutsuu ulommassa silmukassa evaluation funktiota, jonka aikavaativuus on O(n), missä n arvo vaihtelee 4-7 välillä, eli O(7). 
+
+Tilavaativuus pitäis olla bm eli 7*4=28, kun syvyys on 4.
+
+### connect.py
+Ui_start, playing_stage funktion aikavaativuudet jätetty huomiotta. 
+Drop_piece funktion aikavaativuus on O(7), kuten myös check_full funktion. Ne käyvät pelilaudan sarakkeet läpi silmukassa kerran.
+print_board funktion aikavaativuus on O(7²), koska sisäkkäisessä silmukassa käydään jokainen pelilauta listan rivi ja sarake kohta läpi ja ne lisätään pakkaan. 
+Check_top funktion aikavaativuus on O(6), funktio käy pelilaudan yhden sarakkeen läpi.
+Check_winner funktio kutsuu seitsemää muuta funktiota, check_winner_vertical, -horizontal_left, -horizontal_right, -up_right, -up_left, -down_right, -down_left 
+joiden aikavaativuudet ovat O(6) tai O(7), koska ne käyvät yhtä pelilaudan vaaka-, pysty- tai diagonaalisuoraa läpi.
+Score_position aikavaativuus on score vertical silmukan takia O(7^2). Funktio kutsuu ulommassa silmukassa evaluation funktiota, jonka aikavaativuus on O(7). 
+
 
 ## Projektin puutteet
 
-Projektin suurimmat puutteet ovat heuristiikassa ja siinä etteivät kaikki funktiot ole tarpeeksi tehokkaita.
+Projektin suurimmat puutteet ovat heuristiikassa ja siinä etteivät kaikki funktiot ole tarpeeksi tehokkaita. Evaluate ja score_position funktiot pitäisi kirjoittaa melkein kokonaan uusiksi. Lisäksi minmax algoritmi ei ole implementoitu täysin oikein, esim. ei toimi parittomilla syvyyksillä ja testien perusteella toimii parhaiten pienemmillä syvyyksillä kuin suuremmilla.
 
 
 ## Koodin funktioiden ja toiminnan yksityiskohtainen selitys
@@ -124,13 +141,23 @@ Funktio palauttaa lopulta score arvon.
 
 
 #### evaluate
+Funktio pisteytyksessä on paljon parannettavaa, mutta toimii edes jotenkin.
+
 Ottaa argumenttina osion ja pelaajan ja laskee osiolle arvon.
-Ensiksi alustetaan score muuttujan arvoksi 0, opp muuttujan arvoksi 2 tai jos pelaajan numero on 2 , niin opp arvoksi vaihdetaan 1.
+Ensiksi alustetaan score muuttujan arvoksi 0, opp muuttujan arvoksi 2 tai jos pelaajan numero on 2, niin opp arvoksi vaihdetaan 1.
+own_point, opp_point, ja blanks arvoiksi asetetaan 0. Tarkoitus on, että own_point pitää yllä tietoa vastaan tulleista omista pelimerkeistä ja opp_point taas vastustajan. Blanks pitää tietoa yllä tyhjistä ruuduista.
+Funktio käy silmukassa läpi jokaisen osion kohdan. Jos omia merkkejä on tullut vastaan 4 putkeen, palautetaan suoraan inf, sillä muilla arvoilla ei tällöin ole merkitystä. Samalla jos vastaan tulee 4 vastustajan merkkiä putkeen, palautetaan -inf.
+Jos vastaan tulee oma numero, kasvatetaan own_point arvoa yhdellä ja jos vastustajan opp_point ei ole nolla, nollataan se ja blanks (koska vastustajan merkkiä edeltävät nollat ei merkitseviä omasta merkistä eteenpäin).
+Jos vastaan tulee vastustajan numero, kasvastetaan opp_point arvoa yhdellä ja jos own_point ei ole nolla, nollataan se ja blanks.
+Muuten kasvatetaan blanks arvoa yhdellä (tyhjä kohta).
+
+Lopuksi käydään vielä läpi pisteytykset jos own_point arvo on yli 4 palautetaan inf, jos 3 lisätään score arvoon 100000, jos 2 ja blanks arvo on yli 2, niin kasvatetaan score arvoa 150. Sitten jos vastustajan point arvo on yli 4, palautetaan -inf, jos 3 vähennetään -10000 scoresta ja jos 2 vähennetään 150.
+Lopuksi palautetaan score arvo.
 
 
 #### possible_columns
 Generoi ja palauttaa listan sarakkeista joihin siirron tekeminen on mahdollista.
-Funktio saa argumenttina pelaajan numeron ja pelilaudan ja käy läpi silmukassa laudan joka sarakkeen ja testaa onko sarakkeeseen siirron tekeminen mahdollista drop_piece funktiolla. Order listaan on valmiiksi laitettu siirrot "parhaaseen" järjestykseen. Jos siirron tekeminen mahdollista, lisää sarakelistaan sarakkeen numeron. Palauttaa lopuksi listan sarakkeista.
+Funktio saa argumenttina pelaajan numeron ja pelilaudan ja käy läpi silmukassa laudan joka sarakkeen ja testaa onko sarakkeeseen siirron tekeminen mahdollista drop_piece funktiolla. Order pakkaan on valmiiksi laitettu siirrot "parhaaseen" järjestykseen. Jos siirron tekeminen mahdollista, lisätään sarakepakkaan sarakkeen numeron. Palauttaa lopuksi pakan sarakkeista.
 
 
 ### minmax.py

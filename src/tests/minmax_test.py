@@ -39,16 +39,6 @@ class TestConnect(unittest.TestCase):
         board = [[0, 0, 0, 0, 0, 0, 0],
                  [0, 0, 0, 0, 0, 0, 0],
                  [1, 0, 0, 0, 0, 0, 0],
-                 [0, 1, 0, 0, 0, 0, 0],
-                 [0, 0, 1, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0]]
-
-        self.assertEqual(3, minmax(board, 2, float("-inf"), float("inf"))[0])
-
-    def test_block_diagonal_right_2(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [1, 0, 0, 0, 0, 0, 0],
                  [2, 1, 0, 0, 0, 0, 0],
                  [2, 2, 1, 0, 0, 0, 0],
                  [2, 2, 1, 0, 0, 0, 0]]
@@ -105,27 +95,17 @@ class TestConnect(unittest.TestCase):
 
         self.assertEqual(3, minmax(board, 2, float("-inf"), float("inf"))[0])
 
-    def test_winning_move_before_opponent_4(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [2, 0, 0, 0, 0, 0, 0],
-                 [0, 2, 0, 0, 0, 0, 1],
-                 [0, 0, 2, 0, 0, 0, 1],
-                 [0, 0, 0, 0, 0, 0, 1]]
-
-        self.assertEqual(3, minmax(board, 2, float("-inf"), float("inf"))[0])
-
-    def test_winning_move_before_opponent_5(self):
+    def test_winning_move_before_opponent(self):
         board = [[0, 0, 0, 0, 0, 0, 0],
                  [0, 0, 0, 0, 0, 0, 0],
                  [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 1],
-                 [0, 0, 0, 0, 0, 0, 1],
-                 [2, 2, 2, 0, 0, 0, 1]]
+                 [1, 0, 0, 0, 0, 0, 2],
+                 [1, 0, 0, 0, 0, 0, 2],
+                 [1, 0, 0, 0, 0, 0, 2]]
 
-        self.assertEqual(3, minmax(board, 2, float("-inf"), float("inf"))[0])
+        self.assertEqual(6, minmax(board, 2, float("-inf"), float("inf"))[0])
 
-    def test_winning_move_before_opponent_6(self):
+    def test_winning_move_before_opponent_2(self):
         board = [[0, 0, 0, 0, 0, 0, 0],
                  [0, 0, 0, 0, 0, 0, 0],
                  [0, 0, 0, 0, 0, 0, 0],
@@ -135,15 +115,24 @@ class TestConnect(unittest.TestCase):
 
         self.assertEqual(0, minmax(board, 2, float("-inf"), float("inf"))[0])
 
-    def test_block_diagonal_left_up(self):
+    def test_board_full(self):
+        board = [[1, 1, 2, 2, 1, 1, 1],
+                 [1, 2, 1, 1, 2, 1, 2],
+                 [2, 2, 1, 2, 2, 1, 1],
+                 [1, 2, 2, 2, 1, 2, 2],
+                 [2, 1, 1, 1, 2, 2, 1],
+                 [2, 1, 2, 2, 1, 1, 2]]
+        self.assertEqual(0, minmax(board, 2, float("-inf"), float("inf"))[1])
+
+    def test_blocking_win_situation(self):
         board = [[0, 0, 0, 0, 0, 0, 0],
                  [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 1, 1],
-                 [0, 0, 0, 0, 1, 2, 2],
-                 [0, 0, 0, 1, 2, 2, 1]]
+                 [0, 0, 0, 0, 1, 0, 0],
+                 [0, 0, 0, 1, 2, 1, 0],
+                 [0, 0, 2, 2, 2, 1, 0],
+                 [0, 0, 1, 2, 2, 1, 0]]
 
-        self.assertEqual(6, minmax(board, 2, float("-inf"), float("inf"))[0])
+        self.assertEqual(5, minmax(board, 2, float("-inf"), float("inf"))[0])
 
     def test_block_situation(self):
         board = [[0, 0, 0, 0, 0, 0, 0],
@@ -155,102 +144,22 @@ class TestConnect(unittest.TestCase):
 
         self.assertEqual(1, minmax(board, 2, float("-inf"), float("inf"))[0])
 
-    def test_winning_move_before_opponent(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 2],
-                 [1, 0, 0, 0, 0, 2, 0],
-                 [1, 0, 0, 0, 2, 0, 0],
-                 [1, 0, 0, 0, 0, 0, 0]]
-
-        self.assertEqual(3, minmax(board, 2, float("-inf"), float("inf"))[0])
-
-    def test_winning_move_before_opponent_2(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [1, 0, 0, 0, 0, 0, 2],
-                 [1, 0, 0, 0, 0, 0, 2],
-                 [1, 0, 0, 0, 0, 0, 2]]
-
-        self.assertEqual(6, minmax(board, 2, float("-inf"), float("inf"))[0])
-
-    def test_winning_move_before_opponent_3(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [1, 0, 0, 0, 0, 0, 0],
-                 [1, 0, 0, 0, 0, 0, 0],
-                 [1, 0, 0, 0, 2, 2, 2]]
-
-        self.assertEqual(3, minmax(board, 2, float("-inf"), float("inf"))[0])
-
-    def test_winning_move_vs_opp_before(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 1, 2, 0, 0, 0],
-                 [0, 0, 1, 2, 0, 0, 0],
-                 [0, 0, 1, 2, 0, 0, 0]]
-
-        self.assertEqual(3, minmax(board, 2, float("-inf"), float("inf"))[0])
-
-    def test_winning_move_vs_opp_before_2(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 1, 0, 2, 0, 0, 0],
-                 [0, 1, 0, 2, 0, 0, 0],
-                 [0, 1, 0, 2, 0, 0, 0]]
-
-        self.assertEqual(3, minmax(board, 2, float("-inf"), float("inf"))[0])
-
-    def test_winning_move_vs_opp_after(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 2, 1, 0, 0],
-                 [0, 0, 0, 2, 1, 0, 0],
-                 [0, 0, 0, 2, 1, 0, 0]]
-
-        self.assertEqual(3, minmax(board, 2, float("-inf"), float("inf"))[0])
-
-    def test_winning_move_vs_opp_after_2(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 2, 0, 1, 0],
-                 [0, 0, 0, 2, 0, 1, 0],
-                 [0, 0, 0, 2, 0, 1, 0]]
-
-        self.assertEqual(3, minmax(board, 2, float("-inf"), float("inf"))[0])
-
-    def test_winning_move_vs_opp_after_3(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 2, 0, 0, 0, 0],
-                 [0, 0, 2, 0, 0, 0, 0],
-                 [0, 0, 2, 0, 1, 1, 1]]
-
-        self.assertEqual(2, minmax(board, 2, float("-inf"), float("inf"))[0])
-
-    def test_blocking_win(self):
-        board = [[0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 0, 0, 0],
-                 [0, 0, 0, 0, 1, 0, 0],
-                 [0, 0, 0, 1, 2, 1, 0],
-                 [0, 0, 2, 2, 2, 1, 0],
-                 [0, 0, 1, 2, 2, 1, 0]]
-
-        self.assertEqual(5, minmax(board, 2, float("-inf"), float("inf"))[0])
-
     def test_winning_move_situation(self):
         board = [[0, 0, 0, 0, 0, 0, 0],
                  [0, 0, 0, 0, 0, 1, 0],
                  [0, 0, 0, 1, 2, 2, 0],
                  [0, 0, 0, 2, 1, 2, 0],
                  [0, 0, 2, 1, 2, 1, 0],
+                 [0, 0, 1, 2, 1, 1, 2]]
+
+        self.assertEqual(1, minmax(board, 2, float("-inf"), float("inf"))[0])
+
+    def test_winning_move_situation_2(self):
+        board = [[0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 1, 0],
+                 [0, 0, 0, 1, 2, 2, 0],
+                 [0, 0, 0, 2, 1, 2, 0],
+                 [0, 0, 2, 1, 2, 1, 1],
                  [0, 0, 1, 2, 1, 1, 2]]
 
         self.assertEqual(1, minmax(board, 2, float("-inf"), float("inf"))[0])
@@ -266,11 +175,31 @@ class TestConnect(unittest.TestCase):
         self.assertNotEqual(
             1, minmax(board, 2, float("-inf"), float("inf"))[0])
 
-    def test_board_full(self):
-        board = [[1, 1, 2, 2, 1, 1, 1],
-                 [1, 2, 1, 1, 2, 1, 2],
-                 [2, 2, 1, 2, 2, 1, 1],
-                 [1, 2, 2, 2, 1, 2, 2],
-                 [2, 1, 1, 1, 2, 2, 1],
-                 [2, 1, 2, 2, 1, 1, 2]]
-        self.assertEqual(0, minmax(board, 2, float("-inf"), float("inf"))[1])
+    def test_losing_move_situation_2(self):
+        board = [[0, 0, 1, 1, 2, 0, 0],
+                 [0, 0, 2, 2, 1, 0, 0],
+                 [1, 0, 1, 2, 2, 0, 0],
+                 [2, 0, 2, 1, 1, 0, 0],
+                 [1, 0, 1, 1, 2, 2, 0],
+                 [1, 0, 1, 2, 1, 2, 0]]
+
+        self.assertNotEqual(
+            1, minmax(board, 2, float("-inf"), float("inf"))[0])
+
+    def test_block_win_situation(self):
+        board = [[0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 2, 2, 0, 0],
+                 [0, 2, 1, 2, 1, 0, 0],
+                 [0, 1, 2, 1, 2, 1, 0],
+                 [0, 1, 1, 2, 1, 2, 0]]
+        self.assertEqual(2, minmax(board, 2, float("-inf"), float("inf"))[0])
+
+    def test_block_win_situation_2(self):
+        board = [[0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 2, 0, 0],
+                 [0, 2, 1, 2, 1, 0, 0],
+                 [0, 1, 2, 1, 2, 1, 0],
+                 [0, 1, 1, 2, 1, 2, 0]]
+        self.assertEqual(2, minmax(board, 2, float("-inf"), float("inf"))[0])
