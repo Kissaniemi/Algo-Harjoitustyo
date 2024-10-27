@@ -35,7 +35,7 @@ Koodi ajetaan ap.py tiedoston kautta, joka kutsuu connect_py:n funktiota ui_star
 
 ### connect.py
 
-#### "ui_start"
+#### ui_start
 Pääkäyttöliittymä, menu.
 ui_start funktio alustaa ensin tyhjän pelipohja/lautamuuttujan "board" (mahdollista vaihtaa tilalle toinen pelipohja/aloitustilanne. Huom. Täyden aloituslaudan antaminen johtaa virheeseen).
 Seuraavaksi koodi esittää syötekysymyksen haluatko pelata tekoälyä vastaan vai. Syötteenä hyväksytään "yes" ja "no", 
@@ -44,7 +44,7 @@ muutoin kusutaan ui_start funktiota alusta. Jos syöte on "1", kutsutaan playing
 Jos syöte on "2", kutsutaan samaista funktiota argumenteilla (2, board, True, False). 
 Jos aiempi syöte oli "no", kutsutaan playing_stage funktiota argumenteilla (1, board). Argumenteista lisää playing_stage funktion selitteissä.
 
-#### "playing_stage"
+#### playing_stage
 Peliosuuden käyttöliittymä.
 Argumenteissa (player, board, ai=False, ai_turn=False) luku 1 tai 2 erottaa pelaajat toisistaan. AI on aina pelaaja 2. 
 Toisena annettu syöte "board" on pelilauta, joka kulkee mukana listana listoja. Seuraavaksi on asetettu ai=False ja ai_turn=False, 

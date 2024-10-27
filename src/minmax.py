@@ -3,11 +3,15 @@ import connect
 
 
 def minmax(board, player, alpha, beta, depth=4):
-    """MinMax algorithm
-    based on the wikipedia pseudocode for minmax algorithm 
-    https://en.wikipedia.org/wiki/Minimax, 
-    with additions based on the minmax algorithm from 
-    https://roboticsproject.readthedocs.io/en/latest/ConnectFourAlgorithm.html.
+    """MinMax algorithm, returns best move and its value
+
+    Args:
+        board (nested list): gameboard
+        player (int): player whose move we are evaluating
+        alpha (float/int): alpha value for pruning
+        beta (float/int): beta value for pruning
+        depth (int, optional): search depth. Defaults to 4.
+
     """
     columns = connect.possible_columns(player, board)
     if depth == 0 or len(columns) == 0:

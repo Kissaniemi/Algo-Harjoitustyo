@@ -40,7 +40,14 @@ def ui_start():
 
 def playing_stage(player, board, ai=False, ai_turn=False):
     """Game playing stage ui
+
+    Args:
+        player (int): player whose turn it is
+        board (nested list): gameboard
+        ai (bool, optional): Playing against AI. Defaults to False.
+        ai_turn (bool, optional): Ai turn. Defaults to False.
     """
+
     if ai_turn is False:
         print(f"Player {player} turn ")
         column = input("Choose column 1-7 to drop a piece there: ")
@@ -98,6 +105,11 @@ def playing_stage(player, board, ai=False, ai_turn=False):
 def drop_piece(player, board, column):
     """Changes and returns given column on the board where first move possible, 
     returns False if move not possible
+
+    Args:
+        player (int): numer of the player making a move
+        board (nested list): gameboard
+        column (int): number of the column move is made to
     """
     for row in reversed(board):
         if row[column] == 0:
@@ -108,7 +120,11 @@ def drop_piece(player, board, column):
 
 def check_full(board):
     """Checks top row of board to see if board is full,
-       (no need to check lower rows, since top row is always last to get filled in game)"""
+       (no need to check lower rows, since top row is always last to get filled in game)
+
+    Args:
+        board (nested list): gameboard
+    """
     for i in board[0]:
         if i == 0:
             return False
@@ -116,7 +132,11 @@ def check_full(board):
 
 
 def print_board(board):
-    """Prints board on display"""
+    """Prints board on display
+
+    Args:
+        board (nested list): gameboard
+    """
     print()
     for row in board:
         print_row = deque()
@@ -136,7 +156,13 @@ def print_board(board):
 
 
 def check_top(board, column):
-    """Returns the top row of given column"""
+    """Returns the top row of given column
+
+    Args:
+        board (nested list): gameboard
+        column (int): column to be checked
+
+    """
     row_count = -6
     for i in range(0, 6):
         if board[i][column] != 0:
@@ -148,6 +174,12 @@ def check_top(board, column):
 def check_winner(board, column, player):
     """Checks if the last move was a winning move by calling the winning move check functions, 
     returns True if yes, False if no.
+
+    Args:
+        board (nested list): gameboard
+        column (int): column last move made to
+        player (int): player who made last move
+
     """
     row = check_top(board, column)
 
@@ -163,7 +195,17 @@ def check_winner(board, column, player):
 
 
 def check_winner_vertical(board, column, row, player):
-    """ Check down vertical ( 0, -1) """
+    """ Check down vertical ( 0, -1)
+    Returns False if no 4 in a row, True is yes.
+
+    Args:
+        board (nested list): gameboard
+        column (int): column last move made to
+        row (int): row last move made to
+        player (int): player who made the last move
+
+
+    """
     count = 1
     r = row+1
     c = column
@@ -177,7 +219,15 @@ def check_winner_vertical(board, column, row, player):
 
 
 def check_winner_horizontal_left(board, column, row, player):
-    """ Check left horizontal  ( -1, 0) <- """
+    """ Check left horizontal  ( -1, 0) <- 
+    Returns False if no 4 in a row, True is yes.
+
+    Args:
+        board (nested list): gameboard
+        column (int): column last move made to
+        row (int): row last move made to
+        player (int): player who made the last move
+        """
     count = 1
     r = row
     c = column-1
@@ -194,7 +244,15 @@ def check_winner_horizontal_left(board, column, row, player):
 
 
 def check_winner_horizontal_right(board, column, row, player):
-    """ Check right horizontal ( 1, 0) -> """
+    """ Check right horizontal ( 1, 0) ->
+     Returns False if no 4 in a row, True is yes.
+
+    Args:
+        board (nested list): gameboard
+        column (int): column last move made to
+        row (int): row last move made to
+        player (int): player who made the last move
+          """
     count = 1
     r = row
     c = column+1
@@ -211,7 +269,15 @@ def check_winner_horizontal_right(board, column, row, player):
 
 
 def check_winner_up_right(board, column, row, player):
-    """ Check up right diagonal ( 1, 1) ↗ """
+    """ Check up right diagonal ( 1, 1) ↗ 
+    Returns False if no 4 in a row, True is yes.
+
+    Args:
+        board (nested list): gameboard
+        column (int): column last move made to
+        row (int): row last move made to
+        player (int): player who made the last move
+        """
     count = 1
     r = row-1
     c = column+1
@@ -229,7 +295,15 @@ def check_winner_up_right(board, column, row, player):
 
 
 def check_winner_down_left(board, column, row, player):
-    """  Check down left diagonal ( -1, -1) ↙ """
+    """  Check down left diagonal ( -1, -1) ↙ 
+    Returns False if no 4 in a row, True is yes.
+
+    Args:
+        board (nested list): gameboard
+        column (int): column last move made to
+        row (int): row last move made to
+        player (int): player who made the last move
+        """
     count = 1
     r = row+1
     c = column-1
@@ -247,7 +321,15 @@ def check_winner_down_left(board, column, row, player):
 
 
 def check_winner_up_left(board, column, row, player):
-    """  Check up left diagonal ( -1, 1) ↖ """
+    """  Check up left diagonal ( -1, 1) ↖ 
+    Returns False if no 4 in a row, True is yes.
+
+    Args:
+        board (nested list): gameboard
+        column (int): column last move made to
+        row (int): row last move made to
+        player (int): player who made the last move
+        """
     count = 1
     r = row-1
     c = column-1
@@ -265,7 +347,15 @@ def check_winner_up_left(board, column, row, player):
 
 
 def check_winner_down_right(board, column, row, player):
-    """ Check down right diagonal ( 1, -1) ↘"""
+    """ Check down right diagonal ( 1, -1) ↘
+    Returns False if no 4 in a row, True is yes.
+
+    Args:
+        board (nested list): gameboard
+        column (int): column last move made to
+        row (int): row last move made to
+        player (int): player who made the last move
+        """
     count = 1
     r = row+1
     c = column+1
@@ -284,7 +374,12 @@ def check_winner_down_right(board, column, row, player):
 
 def score_position(board, player):
     """Board value heuristics, takes sections from boards rows and 
-       passes them to the evaluate function
+       passes them to the evaluate function and returns score.
+
+    Args:
+        board (nested list): gameboard
+        player (int): player whose position we are evaluating
+
     """
     score = 0
 
@@ -368,7 +463,12 @@ def score_position(board, player):
 
 
 def evaluate(section, player):
-    """Evaluates given section for player vs opponent
+    """Evaluates given section for player vs opponent, returns overall score
+
+    Args:
+        section (list): section of the gameboard
+        player (int): player whose turn we are evaluating
+
     """
     score = 0
     opp = 2
