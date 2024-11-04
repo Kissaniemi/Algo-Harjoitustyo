@@ -1,9 +1,6 @@
 # Viikko 1
 
-Harjoitustyön uuden repositorion alustus.
-
-Pelipohjan koodin jatkaminen, pääasiassa voittajan tarkistusfunktio. Ei toimintakunnossa, kehitys jatkuu.
+Jatkaa projektia edelliseltä kurssilta. Projekti ei edennyt edellisellä viikolla.
 
 
-Työtunnit: 6h
 
