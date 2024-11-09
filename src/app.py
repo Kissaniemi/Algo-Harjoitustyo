@@ -1,3 +1,3 @@
-from connect import ui_start
+from connect import menu_ui
 
-ui_start()
+menu_ui()
