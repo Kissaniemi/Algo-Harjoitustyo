@@ -1,9 +1,8 @@
-from copy import deepcopy
 from collections import deque
 from minmax import minmax
 
 
-def ui_start():
+def menu_ui():
     """Basic game start ui, "menu"
     """
     board = [
@@ -23,22 +22,22 @@ def ui_start():
             print_board(board)
             print(" ")
             print("AI making move")
-            playing_stage(2, board, True, True)
+            playing_ui(2, board, None, True, True)
         elif player == "1":
             print_board(board)
-            playing_stage(1, board, True, False)
+            playing_ui(1, board, None, True, False)
 
     elif ai_player == "no":
         print("Chose to not play against AI.")
         print_board(board)
-        playing_stage(1, board)
+        playing_ui(1, board, None)
 
     print("Input not accepted, try again.")
     print("")
-    ui_start()
+    menu_ui()
 
 
-def playing_stage(player, board, ai=False, ai_turn=False):
+def playing_ui(player, board, last_move, ai=False, ai_turn=False):
     """Game playing stage ui
 
     Args:
@@ -53,53 +52,57 @@ def playing_stage(player, board, ai=False, ai_turn=False):
         column = input("Choose column 1-7 to drop a piece there: ")
         if column == "" or not column.isdigit():
             print("Invalid placement")
-            playing_stage(player, board, ai)
+            playing_ui(player, board, last_move, ai)
 
         if int(column) > 7 or int(column) < 1:
             print("Invalid placement")
-            playing_stage(player, board, ai)
+            playing_ui(player, board, last_move, ai)
 
         new_board = drop_piece(player, board, int(column)-1)
 
         if new_board is False:
             print("Invalid placement")
-            playing_stage(player, board, ai)
-
+            playing_ui(player, board, last_move, ai)
+        
+        last_move = int(column)-1
         print_board(new_board)
 
         if check_winner(new_board, int(column)-1, player):
             print(f"Winner was player {player}!")
             print(" ")
-            ui_start()
+            menu_ui()
 
         if check_full(new_board):
             print("Board full, no winners!")
-            ui_start()
+            menu_ui()
 
         if ai is False:
             if player == 1:
-                playing_stage(2, new_board)
+                playing_ui(2, new_board, last_move)
             else:
-                playing_stage(1, new_board)
+                playing_ui(1, new_board, last_move)
         else:
-            playing_stage(2, new_board, True, True)
+            playing_ui(2, new_board, last_move, True, True)
 
     else:
         print("AI turn")
-        best_move, value = minmax(board, 2, float("-inf"), float("inf"))
+        best_move, value = minmax(board, 2, last_move, -1000000, 1000000)
+        print(best_move, value)
         new_board = drop_piece(2, board, best_move)
+
+        last_move = best_move
         print_board(new_board)
 
         if check_winner(new_board, best_move, 2):
             print("Winner was AI!")
             print(" ")
-            ui_start()
+            menu_ui()
 
         elif check_full(board):
             print("Board full, no winners!")
-            ui_start()
+            menu_ui()
 
-        playing_stage(1, new_board, True)
+        playing_ui(1, new_board, last_move, True)
 
 
 def drop_piece(player, board, column):
@@ -114,8 +117,18 @@ def drop_piece(player, board, column):
     for row in reversed(board):
         if row[column] == 0:
             row[column] = int(player)
-            return deepcopy(board)
+            return board
     return False
+
+
+def possible_columns(board, order):
+    """Returns list of possible columns by checking if the top row is empty for each column
+    """
+    columns = deque()
+    for i in order:
+        if board[0][i] == 0:
+            columns.append(i)
+    return columns
 
 
 def check_full(board):
@@ -390,17 +403,13 @@ def score_position(board, player):
         if board[i][3] == 0:
             zero += 1
             if zero >= 2 and no_break >= 2:
-                score += 500
+                score += 100
             if zero >= 3 and no_break >= 1:
-                score += 250
+                score += 50
         elif board[i][3] == player:
             score += 1000
             no_break += 1
-        else:
-            if no_break >= 4:
-                score = float("inf")
-                return score
-            score = 0
+
 
     # Score horizontal
     for r in range(0, 6):
@@ -480,12 +489,6 @@ def evaluate(section, player):
     blanks = 0
 
     for i in section:
-        if own_point >= 4:
-            return float("inf")
-
-        if opp_point >= 4:
-            return float("-inf")
-
         if i == player:
             own_point += 1
             if opp_point != 0:
@@ -500,32 +503,17 @@ def evaluate(section, player):
         else:
             blanks += 1
 
-    if own_point >= 4:
-        return float("inf")
+
     if own_point == 3:
-        score += 100000
+        score += 1200
     if own_point == 2:
         if blanks > 1:
-            score += 150
+            score += 200
 
-    if opp_point == 4:
-        return float("-inf")
+
     if opp_point == 3:
-        score -= 10000
+        score -= 1000
     if opp_point == 2:
-        score -= 150
+        score -= 100
 
     return score
-
-
-def possible_columns(player, board):
-    """Generates and returns list of possible columns, uses drop_piece function 
-       to evaluate if column is free for a move
-    """
-    order = deque([3, 2, 4, 1, 5, 0, 6])
-    columns = deque()
-    for i in order:
-        new_board = drop_piece(player, deepcopy(board), i)
-        if new_board is not False:
-            columns.append(i)
-    return columns
