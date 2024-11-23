@@ -396,21 +396,6 @@ def score_position(board, player):
     """
     score = 0
 
-    # Score center column extra
-    no_break = 0
-    zero = 0
-    for i in range(-6, 0):
-        if board[i][3] == 0:
-            zero += 1
-            if zero >= 2 and no_break >= 2:
-                score += 100
-            if zero >= 3 and no_break >= 1:
-                score += 50
-        elif board[i][3] == player:
-            score += 1000
-            no_break += 1
-
-
     # Score horizontal
     for r in range(0, 6):
         score += evaluate(board[r], player)
@@ -486,34 +471,24 @@ def evaluate(section, player):
 
     own_point = 0
     opp_point = 0
-    blanks = 0
 
     for i in section:
         if i == player:
             own_point += 1
-            if opp_point != 0:
-                opp_point = 0
-                blanks = 0
-
         if i == opp:
-            opp_point += 1
-            if own_point != 0:
-                own_point = 0
-                blanks = 0
-        else:
-            blanks += 1
-
+            opp_point +=1
 
     if own_point == 3:
         score += 1200
     if own_point == 2:
-        if blanks > 1:
-            score += 200
-
+        score += 200
 
     if opp_point == 3:
         score -= 1000
     if opp_point == 2:
         score -= 100
+
+    return score
+
 
     return score
