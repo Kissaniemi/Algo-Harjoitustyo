@@ -18,7 +18,7 @@ def minmax(board, player, last_move, alpha, beta, depth=6):
     if last_move is not None:
         if player == 1:
             if connect.check_winner(board, last_move, 2) is True:
-                return last_move, -10000     
+                return last_move, 10000     
         else:
             if connect.check_winner(board, last_move, 1) is True:
                 return last_move, -10000
@@ -34,7 +34,7 @@ def minmax(board, player, last_move, alpha, beta, depth=6):
     if player == 2:  # Max player
         value = -100000
         best_move = None
-        for column in columns:
+        for column in columns:  
             new_board = connect.drop_piece(player, deepcopy(board), column)
             _, new_value = minmax(new_board, 1, column, alpha, beta, depth - 1)
             if new_value > value:
@@ -49,7 +49,7 @@ def minmax(board, player, last_move, alpha, beta, depth=6):
     # Min player
     value = 100000
     best_move = None
-    for column in columns:
+    for column in columns: 
         new_board = connect.drop_piece(player, deepcopy(board), column)
         _, new_value = minmax(new_board, 2, column, alpha, beta, depth - 1)
         if new_value < value:
