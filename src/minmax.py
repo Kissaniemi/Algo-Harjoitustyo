@@ -35,8 +35,10 @@ def minmax(board, player, last_move, alpha, beta, depth=6):
         value = -100000
         best_move = None
         for column in columns:  
-            new_board = connect.drop_piece(player, deepcopy(board), column)
+            row = connect.check_top(board, column)
+            board[row-1][column] = 2
             _, new_value = minmax(new_board, 1, column, alpha, beta, depth - 1)
+            board[row-1][column] = 0
             if new_value > value:
                 value = new_value
                 best_move = column
@@ -50,8 +52,10 @@ def minmax(board, player, last_move, alpha, beta, depth=6):
     value = 100000
     best_move = None
     for column in columns: 
-        new_board = connect.drop_piece(player, deepcopy(board), column)
+        row = connect.check_top(board, column)
+        board[row-1][column] = 1
         _, new_value = minmax(new_board, 2, column, alpha, beta, depth - 1)
+        board[row-1][column] = 0
         if new_value < value:
             value = new_value
             best_move = column
