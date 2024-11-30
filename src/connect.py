@@ -90,7 +90,6 @@ def playing_ui(player, board, last_move, ai=False, ai_turn=False):
         print(best_move, value)
         new_board = drop_piece(2, board, best_move)
 
-        last_move = best_move
         print_board(new_board)
 
         if check_winner(new_board, best_move, 2):
@@ -102,7 +101,7 @@ def playing_ui(player, board, last_move, ai=False, ai_turn=False):
             print("Board full, no winners!")
             menu_ui()
 
-        playing_ui(1, new_board, last_move, True)
+        playing_ui(1, new_board, best_move, True)
 
 
 def drop_piece(player, board, column):
@@ -407,52 +406,6 @@ def score_position(board, player):
             col.append(board[r][c])
         score += evaluate(col, player)
 
-    # Score diagonal, down right to top left
-    section = deque([board[-3][0], board[-4][1], board[-5][2], board[-6][3]])
-    score += evaluate(section, player)
-
-    section = deque([board[-2][0], board[-3][1], board[-4]
-                    [2], board[-5][3], board[-6][4]])
-    score += evaluate(section, player)
-
-    section = deque([board[-1][0], board[-2][1], board[-3][2],
-                    board[-4][3], board[-5][4], board[-6][5]])
-    score += evaluate(section, player)
-
-    section = deque([board[-1][1], board[-2][2], board[-3][3],
-                    board[-4][4], board[-5][5], board[-6][6]])
-    score += evaluate(section, player)
-
-    section = deque([board[-1][2], board[-2][3], board[-3]
-                    [4], board[-4][5], board[-5][6]])
-    score += evaluate(section, player)
-
-    section = deque([board[-1][3], board[-2][4], board[-3][5], board[-4][6]])
-    score += evaluate(section, player)
-
-    # Score diagonal, down left to top right
-    section = deque([board[-3][6], board[-4][5], board[-5][4], board[-6][3]])
-    score += evaluate(section, player)
-
-    section = deque([board[-2][6], board[-3][5], board[-4]
-                    [4], board[-5][3], board[-6][2]])
-    score += evaluate(section, player)
-
-    section = deque([board[-1][6], board[-2][5], board[-3][4],
-                    board[-4][3], board[-5][2], board[-6][1]])
-    score += evaluate(section, player)
-
-    section = deque([board[-1][5], board[-2][4], board[-3][3],
-                    board[-4][2], board[-5][1], board[-6][0]])
-    score += evaluate(section, player)
-
-    section = deque([board[-1][4], board[-2][3], board[-3]
-                    [2], board[-4][1], board[-5][0]])
-    score += evaluate(section, player)
-
-    section = deque([board[-1][3], board[-2][2], board[-3][1], board[-4][0]])
-    score += evaluate(section, player)
-
     return score
 
 
@@ -487,8 +440,5 @@ def evaluate(section, player):
         score -= 1000
     if opp_point == 2:
         score -= 100
-
-    return score
-
 
     return score
