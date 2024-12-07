@@ -1,6 +1,5 @@
 from collections import deque
-from minmax import minmax
-
+from minmax import iterative_deepening
 
 def menu_ui():
     """Basic game start ui, "menu"
@@ -86,7 +85,7 @@ def playing_ui(player, board, last_move, ai=False, ai_turn=False):
 
     else:
         print("AI turn")
-        best_move, value = minmax(board, 2, last_move, -1000000, 1000000)
+        best_move, value = iterative_deepening(board, 2, last_move, -1000000, 1000000)
         print(best_move, value)
         new_board = drop_piece(2, board, best_move)
 
@@ -102,6 +101,7 @@ def playing_ui(player, board, last_move, ai=False, ai_turn=False):
             menu_ui()
 
         playing_ui(1, new_board, best_move, True)
+
 
 
 def drop_piece(player, board, column):
@@ -323,7 +323,7 @@ def check_winner_down_left(board, column, row, player):
     if c+2 <= 6 and -6 <= r-2:
         if board[r-2][c+2] == player:
             count += 1
-    while 0 <= c and r <= 0 and board[r][c] == player:
+    while 0 <= c and r < 0 and board[r][c] == player:
         count += 1
         r += 1
         c -= 1
@@ -375,7 +375,7 @@ def check_winner_down_right(board, column, row, player):
     if 0 <= c-2 and -6 <= r-2:
         if board[r-2][c-2] == player:
             count += 1
-    while c <= 6 and r <= 0 and board[r][c] == player:
+    while c <= 6 and r < 0 and board[r][c] == player:
         count += 1
         r += 1
         c += 1
@@ -429,16 +429,16 @@ def evaluate(section, player):
         if i == player:
             own_point += 1
         if i == opp:
-            opp_point +=1
+            opp_point += 1
 
     if own_point == 3:
         score += 1200
     if own_point == 2:
-        score += 200
+        score += 100
 
     if opp_point == 3:
         score -= 1000
     if opp_point == 2:
-        score -= 100
+        score -= 500
 
     return score
