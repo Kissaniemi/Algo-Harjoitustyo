@@ -2,6 +2,8 @@
 
 ### Työtunnit: 8h
 
+#### Edit 10.12.24:  Voitontarkitusfunktiota paranneltu, nyt kaikki testit menevät läpi
+
 
 Voittajan tunnistusfunktiossa oli sittenkin vielä ainakin yksi virhe (alaspäin menevien diagonaalien tarkistus meni rivin verran yli laudan), nyt korjattu.
 
