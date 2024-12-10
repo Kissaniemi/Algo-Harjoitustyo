@@ -196,12 +196,9 @@ def check_winner(board, column, player):
     row = check_top(board, column)
 
     if check_winner_vertical(board, column, row, player) or \
-            check_winner_horizontal_right(board, column, row, player) or \
-            check_winner_horizontal_left(board, column, row, player) or \
-            check_winner_up_right(board, column, row, player) or \
-            check_winner_down_right(board, column, row, player) or \
-            check_winner_up_left(board, column, row, player) or \
-            check_winner_down_left(board, column, row, player):
+        check_winner_horizontal(board, column, row, player) or \
+        check_winner_diagonal_1(board, column, row, player) or \
+        check_winner_diagonal_2(board, column, row, player):
         return True
     return False
 
@@ -230,8 +227,8 @@ def check_winner_vertical(board, column, row, player):
     return False
 
 
-def check_winner_horizontal_left(board, column, row, player):
-    """ Check left horizontal  ( -1, 0) <- 
+def check_winner_horizontal(board, column, row, player):
+    """ Check left horizontal  ( -1, 0) <- and Check right horizontal ( 1, 0) ->
     Returns False if no 4 in a row, True is yes.
 
     Args:
@@ -244,44 +241,25 @@ def check_winner_horizontal_left(board, column, row, player):
     r = row
     c = column-1
 
-    if c+2 <= 6:
-        if board[r][c+2] == player:
-            count += 1
+    c = column-1
     while 0 <= c and board[r][c] == player:
         count += 1
         c -= 1
         if count >= 4:
             return True
-    return False
-
-
-def check_winner_horizontal_right(board, column, row, player):
-    """ Check right horizontal ( 1, 0) ->
-     Returns False if no 4 in a row, True is yes.
-
-    Args:
-        board (nested list): gameboard
-        column (int): column last move made to
-        row (int): row last move made to
-        player (int): player who made the last move
-          """
-    count = 1
-    r = row
+        
     c = column+1
-
-    if 0 <= c-2:
-        if board[r][c-2] == player:
-            count += 1
     while c <= 6 and board[r][c] == player:
         count += 1
         c += 1
         if count >= 4:
             return True
+        
     return False
 
 
-def check_winner_up_right(board, column, row, player):
-    """ Check up right diagonal ( 1, 1) ↗ 
+def check_winner_diagonal_1(board, column, row, player):
+    """ Check up right diagonal ( 1, 1) ↗  and Check down left diagonal ( -1, -1) ↙
     Returns False if no 4 in a row, True is yes.
 
     Args:
@@ -292,37 +270,17 @@ def check_winner_up_right(board, column, row, player):
         """
     count = 1
     r = row-1
-    c = column+1
 
-    if 0 <= c-1 and r+1 <= 0:
-        if board[r+2][c-2] == player:
-            count += 1
+    c = column+1      
     while c <= 6 and -6 <= r and board[r][c] == player:
         count += 1
         r -= 1
         c += 1
         if count >= 4:
             return True
-    return False
-
-
-def check_winner_down_left(board, column, row, player):
-    """  Check down left diagonal ( -1, -1) ↙ 
-    Returns False if no 4 in a row, True is yes.
-
-    Args:
-        board (nested list): gameboard
-        column (int): column last move made to
-        row (int): row last move made to
-        player (int): player who made the last move
-        """
-    count = 1
+    
     r = row+1
     c = column-1
-
-    if c+2 <= 6 and -6 <= r-2:
-        if board[r-2][c+2] == player:
-            count += 1
     while 0 <= c and r < 0 and board[r][c] == player:
         count += 1
         r += 1
@@ -332,8 +290,8 @@ def check_winner_down_left(board, column, row, player):
     return False
 
 
-def check_winner_up_left(board, column, row, player):
-    """  Check up left diagonal ( -1, 1) ↖ 
+def check_winner_diagonal_2(board, column, row, player):
+    """  Check up left diagonal ( -1, 1) ↖ and Check down right diagonal ( 1, -1) ↘
     Returns False if no 4 in a row, True is yes.
 
     Args:
@@ -343,44 +301,25 @@ def check_winner_up_left(board, column, row, player):
         player (int): player who made the last move
         """
     count = 1
+
     r = row-1
     c = column-1
-
-    if c+2 <= 6 and r+2 < 0:
-        if board[r+2][c+2] == player:
-            count += 1
     while 0 <= c and -6 <= r and board[r][c] == player:
         count += 1
         r -= 1
         c -= 1
         if count >= 4:
             return True
-    return False
-
-
-def check_winner_down_right(board, column, row, player):
-    """ Check down right diagonal ( 1, -1) ↘
-    Returns False if no 4 in a row, True is yes.
-
-    Args:
-        board (nested list): gameboard
-        column (int): column last move made to
-        row (int): row last move made to
-        player (int): player who made the last move
-        """
-    count = 1
+        
     r = row+1
     c = column+1
-
-    if 0 <= c-2 and -6 <= r-2:
-        if board[r-2][c-2] == player:
-            count += 1
     while c <= 6 and r < 0 and board[r][c] == player:
         count += 1
         r += 1
         c += 1
         if count >= 4:
             return True
+
     return False
 
 
