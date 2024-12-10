@@ -6,7 +6,7 @@ column_order = [3,2,4,1,5,6,0]  # preferred order of columns to make a move
 def iterative_deepening(board, player, last_move, alpha, beta):
     start_time = time.time()
     time_limit = 2    
-    depth_limit = 43   
+    depth_limit = 43  #Maxdepth it could potentially reach if it had enough time
 
     for max_depth in range(1, depth_limit):
         best_move, value = minmax(board, player, last_move, alpha, beta, max_depth, 0)
