@@ -23,7 +23,7 @@ Score_position aikavaativuus on score vertical silmukan takia O(7^2). Funktio ku
 
 ## Projektin puutteet
 
-Projektissa on edelleen parannettavaa. Koodissa olisi vielä optimoitavaa ja minmax algoritmi ei toimi kaikissa tilanteissa parhaalla mahdollisella tavalla. Testeissä ei tätä näy, mutta kun AI saa aloittaa vuoronsa toisena, se pelaa huonommin kuin jos se pääsee aloittamaan ensimmäisenä.
+Projektissa on edelleen parannettavaa. Koodissa olisi vielä optimoitavaa ja minmax algoritmi ei toimi kaikissa tilanteissa parhaalla mahdollisella tavalla. Testeissä ei tätä näy, mutta kun AI saa aloittaa vuoronsa toisena, se pelaa huonommin kuin jos se pääsee aloittamaan ensimmäisenä. PRojektia on testattu myös vain yksikkötesteillä, eikä muun tyylisiä testejä ole tehty.
 
 
 ## Koodin funktioiden ja toiminnan yksityiskohtainen selitys
