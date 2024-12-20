@@ -1,8 +1,10 @@
 from collections import deque
 from minmax import iterative_deepening
+import sys
+
 
 def menu_ui():
-    """Basic game start ui, "menu"
+    """Game start menu ui
     """
     board = [
             [0, 0, 0, 0, 0, 0, 0],
@@ -12,7 +14,7 @@ def menu_ui():
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]
     ]
-
+    print("Anytime you want to exit game write 'exit'")
     ai_player = input(
         "Choose if you want to play against AI or not (yes/no): ")
     if ai_player == "yes":
@@ -20,23 +22,30 @@ def menu_ui():
         if player == "2":
             print_board(board)
             print(" ")
-            print("AI making move")
-            playing_ui(2, board, None, True, True)
+            playing_stage_ui(2, board, None, True, True)
         elif player == "1":
             print_board(board)
-            playing_ui(1, board, None, True, False)
+            playing_stage_ui(1, board, None, True, False)
 
     elif ai_player == "no":
         print("Chose to not play against AI.")
         print_board(board)
-        playing_ui(1, board, None)
+        playing_stage_ui(1, board, None)
+
+    elif ai_player == "exit":
+        exit_ui()
 
     print("Input not accepted, try again.")
     print("")
     menu_ui()
 
 
-def playing_ui(player, board, last_move, ai=False, ai_turn=False):
+def exit_ui():
+    print("Exiting program")
+    sys.exit(0)
+
+
+def playing_stage_ui(player, board, last_move, ai=False, ai_turn=False):
     """Game playing stage ui
 
     Args:
@@ -49,20 +58,22 @@ def playing_ui(player, board, last_move, ai=False, ai_turn=False):
     if ai_turn is False:
         print(f"Player {player} turn ")
         column = input("Choose column 1-7 to drop a piece there: ")
+        if column == "exit":
+            exit_ui()
         if column == "" or not column.isdigit():
             print("Invalid placement")
-            playing_ui(player, board, last_move, ai)
+            playing_stage_ui(player, board, last_move, ai)
 
         if int(column) > 7 or int(column) < 1:
             print("Invalid placement")
-            playing_ui(player, board, last_move, ai)
+            playing_stage_ui(player, board, last_move, ai)
 
         new_board = drop_piece(player, board, int(column)-1)
 
         if new_board is False:
             print("Invalid placement")
-            playing_ui(player, board, last_move, ai)
-        
+            playing_stage_ui(player, board, last_move, ai)
+
         last_move = int(column)-1
         print_board(new_board)
 
@@ -77,16 +88,16 @@ def playing_ui(player, board, last_move, ai=False, ai_turn=False):
 
         if ai is False:
             if player == 1:
-                playing_ui(2, new_board, last_move)
+                playing_stage_ui(2, new_board, last_move)
             else:
-                playing_ui(1, new_board, last_move)
+                playing_stage_ui(1, new_board, last_move)
         else:
-            playing_ui(2, new_board, last_move, True, True)
+            playing_stage_ui(2, new_board, last_move, True, True)
 
     else:
         print("AI turn")
-        best_move, value = iterative_deepening(board, 2, last_move, -1000000, 1000000)
-        print(best_move, value)
+        best_move, _ = iterative_deepening(
+            board, 2, last_move, -1000000, 1000000)
         new_board = drop_piece(2, board, best_move)
 
         print_board(new_board)
@@ -100,8 +111,7 @@ def playing_ui(player, board, last_move, ai=False, ai_turn=False):
             print("Board full, no winners!")
             menu_ui()
 
-        playing_ui(1, new_board, best_move, True)
-
+        playing_stage_ui(1, new_board, best_move, True)
 
 
 def drop_piece(player, board, column):
@@ -196,9 +206,9 @@ def check_winner(board, column, player):
     row = check_top(board, column)
 
     if check_winner_vertical(board, column, row, player) or \
-        check_winner_horizontal(board, column, row, player) or \
-        check_winner_diagonal_1(board, column, row, player) or \
-        check_winner_diagonal_2(board, column, row, player):
+            check_winner_horizontal(board, column, row, player) or \
+            check_winner_diagonal_1(board, column, row, player) or \
+            check_winner_diagonal_2(board, column, row, player):
         return True
     return False
 
@@ -218,7 +228,6 @@ def check_winner_vertical(board, column, row, player):
     count = 1
     r = row+1
     c = column
-
     while board[r][c] == player:
         count += 1
         r += 1
@@ -239,7 +248,6 @@ def check_winner_horizontal(board, column, row, player):
         """
     count = 1
     r = row
-    c = column-1
 
     c = column-1
     while 0 <= c and board[r][c] == player:
@@ -247,14 +255,14 @@ def check_winner_horizontal(board, column, row, player):
         c -= 1
         if count >= 4:
             return True
-        
+
     c = column+1
     while c <= 6 and board[r][c] == player:
         count += 1
         c += 1
         if count >= 4:
             return True
-        
+
     return False
 
 
@@ -269,16 +277,16 @@ def check_winner_diagonal_1(board, column, row, player):
         player (int): player who made the last move
         """
     count = 1
-    r = row-1
 
-    c = column+1      
+    r = row-1
+    c = column+1
     while c <= 6 and -6 <= r and board[r][c] == player:
         count += 1
         r -= 1
         c += 1
         if count >= 4:
             return True
-    
+
     r = row+1
     c = column-1
     while 0 <= c and r < 0 and board[r][c] == player:
@@ -310,7 +318,7 @@ def check_winner_diagonal_2(board, column, row, player):
         c -= 1
         if count >= 4:
             return True
-        
+
     r = row+1
     c = column+1
     while c <= 6 and r < 0 and board[r][c] == player:
@@ -354,8 +362,8 @@ def evaluate(section, player):
     Args:
         section (list): section of the gameboard
         player (int): player whose turn we are evaluating
-
     """
+
     score = 0
     opp = 2
     if player == 2:
@@ -363,21 +371,24 @@ def evaluate(section, player):
 
     own_point = 0
     opp_point = 0
+    free_fields = 0
 
     for i in section:
         if i == player:
             own_point += 1
         if i == opp:
             opp_point += 1
+        if i == 0:
+            free_fields += 1
 
-    if own_point == 3:
-        score += 1200
-    if own_point == 2:
+    if own_point == 3 and free_fields > 0:
+        score += 1000
+    if own_point == 2 and free_fields > 1:
         score += 100
 
-    if opp_point == 3:
+    if opp_point == 3 and free_fields > 0:
         score -= 1000
-    if opp_point == 2:
-        score -= 500
+    if opp_point == 2 and free_fields > 1:
+        score -= 100
 
     return score
