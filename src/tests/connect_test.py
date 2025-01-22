@@ -12,7 +12,7 @@ class TestConnect(unittest.TestCase):
                       [0, 0, 0, 0, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0],
                       [0, 0, 0, 0, 0, 0, 0]]
-        self.column_order = [3, 2, 4, 1, 5, 0, 6] 
+        self.column_order = [3, 2, 4, 1, 5, 0, 6]
 
     """possible_columns tests"""
 
@@ -28,7 +28,8 @@ class TestConnect(unittest.TestCase):
                  [0, 0, 0, 2, 1, 1, 1],
                  [0, 0, 0, 2, 1, 2, 2],
                  [0, 0, 0, 1, 2, 2, 1]]
-        self.assertEqual(deque([2, 1, 5, 0]), possible_columns(board, self.column_order))
+        self.assertEqual(deque([2, 1, 5, 0]),
+                         possible_columns(board, self.column_order))
 
     def test_possible_columns_none(self):
         board = [[2, 1, 1, 1, 2, 1, 2],
@@ -241,7 +242,7 @@ class TestConnect(unittest.TestCase):
 
     """evaluate tests"""
 
-    def test_evaluate(self):
+    def test_evaluate_section(self):
         section = [0, 0, 0, 0, 0, 0, 0]
         self.assertEqual(0, evaluate(section, 2))
 
@@ -249,3 +250,36 @@ class TestConnect(unittest.TestCase):
         section1 = [2, 0, 2, 2, 0, 0, 0]
         section2 = [0, 0, 0, 2, 2, 0, 2]
         self.assertEqual(evaluate(section1, 2), evaluate(section2, 2))
+
+
+    def test_evaluate_board_1(self):
+        board = [[0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 2, 0, 0],
+                 [0, 0, 1, 1, 2, 0, 0],
+                 [0, 0, 2, 2, 1, 0, 0],
+                 [0, 0, 2, 1, 1, 2, 1]]
+        
+        self.assertEqual(-900, score_position(board, 2)) 
+        self.assertEqual(900, score_position(board, 1))    
+
+    def test_evauate_board_2(self):
+        board = [[0, 0, 1, 0, 0, 0, 0],
+                 [0, 0, 2, 2, 0, 0, 0],
+                 [0, 0, 2, 2, 1, 0, 0],
+                 [0, 1, 2, 1, 1, 0, 0],
+                 [1, 1, 1, 2, 2, 0, 0],
+                 [2, 2, 1, 2, 1, 0, 0]] 
+        self.assertEqual(-1900, score_position(board, 2)) 
+        self.assertEqual(1900, score_position(board, 1)) 
+
+
+    def test_evaluate_board_3(self):
+        board = [[0, 0, 1, 2, 0, 0, 0],
+                 [0, 2, 1, 2, 2, 0, 0],
+                 [0, 2, 1, 2, 1, 0, 0],
+                 [0, 1, 2, 1, 1, 0, 0],
+                 [0, 1, 2, 1, 2, 1, 0],
+                 [0, 1, 2, 2, 1, 2, 0]]
+        self.assertEqual(-2000, score_position(board, 2)) 
+        self.assertEqual(2000, score_position(board, 1))
