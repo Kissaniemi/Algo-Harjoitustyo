@@ -119,8 +119,10 @@ Testaa koko check_winner funktion toimivuutta, että palauttaa False kun voittaj
 Testaa, että tyhjä rivi palauttaa arvoksi 0.
 
 ##### test_evaluate_gap:
-Testaa, että eri kohdissa olevat siirtojen sijainnit palauttavat kuitenkin saman arvon
+Testaa, että eri kohdissa olevat siirtojen sijainnit palauttavat kuitenkin saman arvon.
 
+#### test_evaluate_board_1/2/3
+Testaa että heuristiikka antaa odotetut arvot eri pelitilanteille.
 
 ### minmax.py testit
 
@@ -178,3 +180,13 @@ Tässä siis häviötilanne on pakosti edessä viiden siirron jälkeen, testaa k
 
 ##### test_block_win_situation ja test_block_win_situation_2:
 Testataan, että pelitilanteessa, missä vastustajalla 3:n suora ja itsellä 3:n suora, tehtäisiin voittoliike. Aiemmin ongelmana että ei tehty voittoliikettä, eikä edes yritetty blokata vastustajaa.
+
+
+### Multiple turn tests
+
+#### test_win_in_4_moves/5_moves/another_win_in_5_moves
+
+Seuraavat testit testaavat että AI on löytänyt voiton useamman siirron päästä ja tekee voittoon johtavat siirrot. Pelitilanteet perustuvat AI:ta vastaan ohjelmalla pelattuihin peleihin ja testeissä simuloidut pelaajan tekemät siirrot ovat pelitilanteessa pelaajan (minun) tekemiä siirtoja, AI:n tekemät siirrot haetaan testeissä joka kerta erikseen minmax funktiolla, jolloin myös testataan että AI ei tee eri valintoja eri testikerroilla, eli sen logiikka ei ole satunnaista.
+
+
+
