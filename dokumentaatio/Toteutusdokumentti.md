@@ -10,7 +10,7 @@ Projektin tekemiseen ei ole käytetty laajoja kielimalleja. Minmax funktion sove
 
 ![image](https://github.com/user-attachments/assets/038a70f1-2694-49b5-8fb6-bf39736e7323)
 
-Minimax-algoritmia on tehostamassa alpha-beta-karsinta ja välimuisti. Testasin algoritmin viemää aikaa asetetulla kolmella eri syvyydellä ja neljällä eri tavalla, niin että molemmat tehosteet ovat käytössä, niin että vain toinen tehosteista on käytössä ja niin ettei kumpikaan tehoste ole käytössä. Testin lähtötilanne on tyhjä pelilauta. Matalammilla syvyyksillä ero ei ole suuri, mutta tehosteiden hyöty näkyy heti syvyyksien kasvaessa, varsinkin syvyyden muuttuessa seitsemästä kahdeksaan. Jokaisella syvyydellä pelitilanne haarautuu maksimissaan seitsemään eri haaraan, jolloin syvyydellä kuusi eri pelitilanteiden määrä voi olla maksimissaan 6⁷= 117 649, syvyydellä seitsemän 7⁷= 823 543 ja syvyydellä kahdeksan 7⁸= 5 764 801. 
+Minimax-algoritmia on tehostamassa alpha-beta-karsinta ja välimuisti. Testasin algoritmin viemää aikaa asetetulla kolmella eri syvyydellä ja neljällä eri tavalla, niin että molemmat tehosteet ovat käytössä, niin että vain toinen tehosteista on käytössä ja niin ettei kumpikaan tehoste ole käytössä. Testin lähtötilanne on tyhjä pelilauta. Matalammilla syvyyksillä ero ei ole suuri, mutta tehosteiden hyöty näkyy heti syvyyksien kasvaessa, varsinkin syvyyden muuttuessa seitsemästä kahdeksaan. Jokaisella syvyydellä pelitilanne haarautuu maksimissaan seitsemään eri haaraan, jolloin syvyydellä kuusi eri pelitilanteiden määrä voi olla maksimissaan 7⁶= 117 649, syvyydellä seitsemän 7⁷= 823 543 ja syvyydellä kahdeksan 7⁸= 5 764 801. 
 
 
 ### minmax.py
