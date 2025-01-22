@@ -2,7 +2,6 @@ from collections import deque
 from minmax import iterative_deepening
 import sys
 
-
 def menu_ui():
     """Game start menu ui
     """
@@ -22,10 +21,10 @@ def menu_ui():
         if player == "2":
             print_board(board)
             print(" ")
-            playing_stage_ui(2, board, None, True, True)
+            playing_stage_ui(2, board, None, 1, True, True)
         elif player == "1":
             print_board(board)
-            playing_stage_ui(1, board, None, True, False)
+            playing_stage_ui(1, board, None, 2, True, False)
 
     elif ai_player == "no":
         print("Chose to not play against AI.")
@@ -45,7 +44,7 @@ def exit_ui():
     sys.exit(0)
 
 
-def playing_stage_ui(player, board, last_move, ai=False, ai_turn=False):
+def playing_stage_ui(player, board, last_move, turn, ai=False, ai_turn=False):
     """Game playing stage ui
 
     Args:
@@ -56,23 +55,23 @@ def playing_stage_ui(player, board, last_move, ai=False, ai_turn=False):
     """
 
     if ai_turn is False:
-        print(f"Player {player} turn ")
+        print(f"Player {player} turn {turn} ")
         column = input("Choose column 1-7 to drop a piece there: ")
         if column == "exit":
             exit_ui()
         if column == "" or not column.isdigit():
             print("Invalid placement")
-            playing_stage_ui(player, board, last_move, ai)
+            playing_stage_ui(player, board, last_move, turn, ai)
 
         if int(column) > 7 or int(column) < 1:
             print("Invalid placement")
-            playing_stage_ui(player, board, last_move, ai)
+            playing_stage_ui(player, board, last_move, turn, ai)
 
         new_board = drop_piece(player, board, int(column)-1)
 
         if new_board is False:
             print("Invalid placement")
-            playing_stage_ui(player, board, last_move, ai)
+            playing_stage_ui(player, board, last_move, turn, ai)
 
         last_move = int(column)-1
         print_board(new_board)
@@ -88,16 +87,16 @@ def playing_stage_ui(player, board, last_move, ai=False, ai_turn=False):
 
         if ai is False:
             if player == 1:
-                playing_stage_ui(2, new_board, last_move)
+                playing_stage_ui(2, new_board, last_move, turn+1)
             else:
-                playing_stage_ui(1, new_board, last_move)
+                playing_stage_ui(1, new_board, last_move, turn+1)
         else:
-            playing_stage_ui(2, new_board, last_move, True, True)
+            playing_stage_ui(2, new_board, last_move, turn+1, True, True)
 
     else:
-        print("AI turn")
+        print(f"AI turn {turn}")
         best_move, _ = iterative_deepening(
-            board, 2, last_move, -1000000, 1000000)
+            board, 2, last_move, -1000000, 1000000, turn)
         new_board = drop_piece(2, board, best_move)
 
         print_board(new_board)
@@ -111,7 +110,7 @@ def playing_stage_ui(player, board, last_move, ai=False, ai_turn=False):
             print("Board full, no winners!")
             menu_ui()
 
-        playing_stage_ui(1, new_board, best_move, True)
+        playing_stage_ui(1, new_board, best_move, turn+1, True)
 
 
 def drop_piece(player, board, column):
@@ -392,3 +391,4 @@ def evaluate(section, player):
         score -= 100
 
     return score
+
