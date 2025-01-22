@@ -6,6 +6,13 @@ Projektin tekemiseen ei ole käytetty laajoja kielimalleja. Minmax funktion sove
 
 ## Funktioiden aika- ja tilavaativuudet
 
+### Aikatestejä eri syvyyksillä
+
+![image](https://github.com/user-attachments/assets/038a70f1-2694-49b5-8fb6-bf39736e7323)
+
+Minimax-algoritmia on tehostamassa alpha-beta-karsinta ja välimuisti. Testasin algoritmin viemää aikaa asetetulla kolmella eri syvyydellä ja neljällä eri tavalla, niin että molemmat tehosteet ovat käytössä, niin että vain toinen tehosteista on käytössä ja niin ettei kumpikaan tehoste ole käytössä. Testin lähtötilanne on tyhjä pelilauta. Matalammilla syvyyksillä ero ei ole suuri, mutta tehosteiden hyöty näkyy heti syvyyksien kasvaessa, varsinkin syvyyden muuttuessa seitsemästä kahdeksaan. Jokaisella syvyydellä pelitilanne haarautuu maksimissaan seitsemään eri haaraan, jolloin syvyydellä kuusi eri pelitilanteiden määrä voi olla maksimissaan 6⁷= 117 649, syvyydellä seitsemän 7⁷= 823 543 ja syvyydellä kahdeksan 7⁸= 5 764 801. 
+
+
 ### minmax.py
 Minmax algoritmin pitäisi toimia alussa määritellyn mukaisesti pahimmillaan O(b^m) ajassa ja ideaalitilanteessa O(b^m/2) ajassa, missä b merkitsee mahdollisten siirtojen määrää ja m syvyyttä. Mahdollisia siirtoja on maksimissaan 7 ja maksimisyvyyden rajaksi on asetettu 42, mutta tähän syvyyteen ei kuitenkaan koskaan päästä, koska ohjelma ei ole tarpeeksi tehokas ja iteratiivinen syveneminen on aikarajoitettu. Tämän lisäksi minmax algoritmi käyttää kolmea connect.py:n funktiota: possible_columns, score_position, drop_piece.
 Näistä possible_columns vie aikaa O(n), jossa n arvo on pelilaudan rivien määrä 6, eli O(6). Drop_piece funktion aikavaativuus on myös O(n), jossa n on sarakkeitten määrä 7, eli O(7).
@@ -23,7 +30,7 @@ Score_position aikavaativuus on score vertical silmukan takia O(7^2). Funktio ku
 
 ## Projektin puutteet
 
-Projektissa on edelleen parannettavaa. Koodissa olisi vielä optimoitavaa ja minmax algoritmi ei toimi kaikissa tilanteissa parhaalla mahdollisella tavalla. Testeissä ei tätä näy, mutta kun AI saa aloittaa vuoronsa toisena, se pelaa huonommin kuin jos se pääsee aloittamaan ensimmäisenä. PRojektia on testattu myös vain yksikkötesteillä, eikä muun tyylisiä testejä ole tehty.
+Projektissa on edelleen parannettavaa. Koodissa olisi vielä optimoitavaa ja minmax algoritmi ei toimi kaikissa tilanteissa parhaalla mahdollisella tavalla. Testeissä ei tätä näy, mutta kun AI saa aloittaa vuoronsa toisena, se pelaa huonommin kuin jos se pääsee aloittamaan ensimmäisenä.
 
 
 ## Koodin funktioiden ja toiminnan yksityiskohtainen selitys
@@ -157,7 +164,7 @@ Jos minmax funktion kutsunnan jälkeen aikaraja on ylittynyt (aikaraja siis ylee
 Tämä jälkeen tulostetaan näkyviin tietoja siitä kauan aikaa suunnilleen siirron tekemiseen meni, mihin syvyyteen lopetettiin ja mikä siirto ja sen arvo on.
 
 #### minmax
-Funktio ottaa argumentteina pelilaudan, pelaajan numeron, edellisen pelaajan siirron, alpha- ja beta-arvon, sekä maksimisyvyyden rajan ja tämän hetkisen syvyyden.
+Funktio ottaa argumentteina pelilaudan, pelaajan numeron, edellisen pelaajan siirron, alpha- ja beta-arvon, sekä maksimisyvyyden rajan ja tämänhetkisen syvyyden.
 Funktio tarkistaa ensin ettei edellisen pelaajan siirto johtanut voittoon tai häviöön ja jos johti niin palautetaan sen mukainen arvo.
 
 Tämän jälkeen funktio hakee mahdolliset siirrot possible_columns funktiolla.
