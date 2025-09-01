@@ -6,11 +6,8 @@ Projektin tekemiseen ei ole käytetty laajoja kielimalleja. Minmax funktion sove
 
 ## Funktioiden aika- ja tilavaativuudet
 
-### Aikatestejä eri syvyyksillä
-
-![image](https://github.com/user-attachments/assets/038a70f1-2694-49b5-8fb6-bf39736e7323)
-
-Minimax-algoritmia on tehostamassa alpha-beta-karsinta ja välimuisti. Testasin algoritmin viemää aikaa asetetulla kolmella eri syvyydellä ja neljällä eri tavalla, niin että molemmat tehosteet ovat käytössä, niin että vain toinen tehosteista on käytössä ja niin ettei kumpikaan tehoste ole käytössä. Testin lähtötilanne on tyhjä pelilauta. Matalammilla syvyyksillä ero ei ole suuri, mutta tehosteiden hyöty näkyy heti syvyyksien kasvaessa, varsinkin syvyyden muuttuessa seitsemästä kahdeksaan. Jokaisella syvyydellä pelitilanne haarautuu maksimissaan seitsemään eri haaraan, jolloin syvyydellä kuusi eri pelitilanteiden määrä voi olla maksimissaan 7⁶= 117 649, syvyydellä seitsemän 7⁷= 823 543 ja syvyydellä kahdeksan 7⁸= 5 764 801. 
+Algoritmi ehtii keskimäärin syvyysteen 9 aikakatkaisun ollessa 3 sekuntia. Jos heuristiikan vaihtaa ns. nollaheuristiikaksi saavutetaan syvyys 13.
+Jokaisella syvyydellä pelitilanne haarautuu maksimissaan seitsemään eri haaraan, jolloin esimerkiksi syvyydellä kuusi eri pelitilanteiden määrä voi olla maksimissaan 7⁶= 117 649. Syvyydellä 9 eri haaroja on 40 353 607 ja syvyydellä 13 haaroja on 96 889 010 407.
 
 
 ### minmax.py
@@ -30,7 +27,7 @@ Score_position aikavaativuus on score vertical silmukan takia O(7^2). Funktio ku
 
 ## Projektin puutteet
 
-Projektissa on edelleen parannettavaa. Koodissa olisi vielä optimoitavaa ja minmax algoritmi ei toimi kaikissa tilanteissa parhaalla mahdollisella tavalla. Testeissä ei tätä näy, mutta kun AI saa aloittaa vuoronsa toisena, se pelaa huonommin kuin jos se pääsee aloittamaan ensimmäisenä.
+Projektissa on edelleen parannettavaa. Koodissa olisi vielä optimoitavaa ja minmax algoritmi ei toimi kaikissa tilanteissa parhaalla mahdollisella tavalla. Testeissä ei tätä näy, mutta kun AI saa aloittaa vuoronsa toisena, se pelaa huonommin kuin jos se pääsee aloittamaan ensimmäisenä. Algoritmin heuristiikkaa voisi nopeuttaa ottamalla käyttöön bittikartat ja tarkentaa arvoja ottamalla huomioon myös diagonaalit. Välimuistia voisi parantaa ottamalla käyttöön alpha ja beta ylä- ja ala-arvot ja karsinta myös siinä kohtaa.
 
 
 ## Koodin funktioiden ja toiminnan yksityiskohtainen selitys
@@ -136,7 +133,7 @@ Sen jälkeen niin kauan kuin c ja r arvot ovat sallituissa rajoissa (pelilaudan 
 
 
 #### score_position
-Pelilaudan arvon saamiseen käytettävä funktio. Ottaa argumenttina pelilaudan ja pelaajan numeron.
+Pelilaudan arvon saamiseen käytettävä funktio. Ottaa argumenttina pelilaudan.
 Funktio jakaa pelilaudan rivejä ja sarakkeita osiin ja antaa ne evaluate funktiolle pisteytettäväksi.
 Funktio alustaa muuttujan score arvoksi 0. 
 
@@ -145,13 +142,8 @@ Seuraavaksi silmukassa luodaan pystysuora rivilista johon lisätään pelilaudan
 
 
 #### evaluate
-Ottaa argumenttina osion ja pelaajan ja laskee osiolle arvon.
-Ensiksi alustetaan score muuttujan arvoksi 0, opp muuttujan arvoksi 2 tai jos pelaajan numero on 2, niin opp arvoksi vaihdetaan 1.
-own_point, opp_point, ja free_fields arvoiksi asetetaan 0. Tarkoitus on, että own_point pitää yllä tietoa vastaan tulleista omista pelimerkeistä ja opp_point taas vastustajan. Free_fields pitää tietoa yllä tyhjistä ruuduista.
-Funktio käy silmukassa läpi jokaisen osion kohdan. Jos vastaan tulee oma numero, kasvatetaan own_point arvoa yhdellä ja jos vastaan tulee vastustajan numero, kasvastetaan opp_point arvoa yhdellä ja jos vastaan tulee 0, kasvatetaan free_fields arvoa yhdellä
-
-Lopuksi käydään vielä läpi pisteytykset sen mukaan kuinka monta own_point, opp_point ja free_fields arvoja on tullut ja palautetaan score arvo.
-
+Ottaa argumenttina osion ja laskee osiolle arvon.
+Etsii mahdollisia pareja ja kolmen rivejä annetusta osiosta. Laskee plussaa pelaajan 2 merkeistä ja miinusta pelaajan 1 merkeistä. Minmaxin puolella tätä muutetaan sen perusteella ollaanko maximoimassa vai minimoimassa.
 
 
 ### minmax.py
@@ -164,8 +156,9 @@ Jos minmax funktion kutsunnan jälkeen aikaraja on ylittynyt (aikaraja siis ylee
 Tämä jälkeen tulostetaan näkyviin tietoja siitä kauan aikaa suunnilleen siirron tekemiseen meni, mihin syvyyteen lopetettiin ja mikä siirto ja sen arvo on.
 
 #### minmax
-Funktio ottaa argumentteina pelilaudan, pelaajan numeron, edellisen pelaajan siirron, alpha- ja beta-arvon, sekä maksimisyvyyden rajan ja tämänhetkisen syvyyden.
-Funktio tarkistaa ensin ettei edellisen pelaajan siirto johtanut voittoon tai häviöön ja jos johti niin palautetaan sen mukainen arvo.
+Funktio ottaa argumentteina pelilaudan, pelaajan numeron, edellisen pelaajan siirron, alpha- ja beta-arvon, sekä maksimisyvyyden rajan ja tämän hetkisen syvyyden ja välimuistin.
+Funktio tarkistaa ensin löytyykö kyseinen pelitilanne välimuistista ja jos löytyy, siirtää silloisen parhaan siirron siirtolistassa ensimmäiseksi.
+Funkti otarkistaa sitten, ettei edellisen pelaajan siirto johtanut voittoon tai häviöön ja jos johti niin palautetaan sen mukainen arvo.
 
 Tämän jälkeen funktio hakee mahdolliset siirrot possible_columns funktiolla.
 Funktio tarkistaa sitten että tämän hetkinen syvyys ei ole maksimisyvyys, ja että mahdollisia siirtoja on eli sarakelista ei ole tyhjä. Muutoin se hakee score_position funktiolla tämän hetkiselle pelitilanteelle arvon ja palauttaa sen edellisen siirron kanssa.
