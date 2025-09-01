@@ -244,12 +244,12 @@ class TestConnect(unittest.TestCase):
 
     def test_evaluate_section(self):
         section = [0, 0, 0, 0, 0, 0, 0]
-        self.assertEqual(0, evaluate(section, 2))
+        self.assertEqual(0, evaluate(section))
 
     def test_evaluate_gap(self):
         section1 = [2, 0, 2, 2, 0, 0, 0]
         section2 = [0, 0, 0, 2, 2, 0, 2]
-        self.assertEqual(evaluate(section1, 2), evaluate(section2, 2))
+        self.assertEqual(evaluate(section1), evaluate(section2))
 
 
     def test_evaluate_board_1(self):
@@ -260,18 +260,16 @@ class TestConnect(unittest.TestCase):
                  [0, 0, 2, 2, 1, 0, 0],
                  [0, 0, 2, 1, 1, 2, 1]]
         
-        self.assertEqual(-900, score_position(board, 2)) 
-        self.assertEqual(900, score_position(board, 1))    
+        self.assertEqual(100, score_position(board))
 
-    def test_evauate_board_2(self):
+    def test_evaluate_board_2(self):
         board = [[0, 0, 1, 0, 0, 0, 0],
                  [0, 0, 2, 2, 0, 0, 0],
                  [0, 0, 2, 2, 1, 0, 0],
                  [0, 1, 2, 1, 1, 0, 0],
                  [1, 1, 1, 2, 2, 0, 0],
                  [2, 2, 1, 2, 1, 0, 0]] 
-        self.assertEqual(-1900, score_position(board, 2)) 
-        self.assertEqual(1900, score_position(board, 1)) 
+        self.assertEqual(200, score_position(board))
 
 
     def test_evaluate_board_3(self):
@@ -281,5 +279,14 @@ class TestConnect(unittest.TestCase):
                  [0, 1, 2, 1, 1, 0, 0],
                  [0, 1, 2, 1, 2, 1, 0],
                  [0, 1, 2, 2, 1, 2, 0]]
-        self.assertEqual(-2000, score_position(board, 2)) 
-        self.assertEqual(2000, score_position(board, 1))
+        self.assertEqual(0, score_position(board))
+
+    def test_evaluate_board_4(self):
+        board = [[0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 0, 0, 0, 0],
+                 [0, 0, 0, 2, 0, 0, 0],
+                 [1, 0, 0, 2, 0, 0, 0],
+                 [1, 0, 0, 2, 0, 0, 0]]
+        
+        self.assertEqual(1000, score_position(board))
