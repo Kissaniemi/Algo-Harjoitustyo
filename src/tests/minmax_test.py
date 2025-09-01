@@ -380,7 +380,7 @@ class TestConnect(unittest.TestCase):
 
         self.assertEqual(True, check_winner(board, 5, 2))
 
-    def test_loss_in_6_moves(self):
+    def test_loss_in_3_moves(self):
         board = [[0, 1, 0, 2, 2, 1, 1],
                  [0, 2, 0, 2, 1, 2, 2],
                  [0, 1, 0, 2, 2, 1, 1],
