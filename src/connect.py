@@ -13,6 +13,7 @@ def menu_ui():
             [0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0]
     ]
+
     print("Anytime you want to exit game write 'exit'")
     ai_player = input(
         "Choose if you want to play against AI or not (yes/no): ")
@@ -24,12 +25,12 @@ def menu_ui():
             playing_stage_ui(2, board, None, 1, True, True)
         elif player == "1":
             print_board(board)
-            playing_stage_ui(1, board, None, 2, True, False)
+            playing_stage_ui(1, board, None, 1, True, False)
 
     elif ai_player == "no":
         print("Chose to not play against AI.")
         print_board(board)
-        playing_stage_ui(1, board, None)
+        playing_stage_ui(1, board, None, 1, False, False)
 
     elif ai_player == "exit":
         exit_ui()
@@ -330,65 +331,59 @@ def check_winner_diagonal_2(board, column, row, player):
     return False
 
 
-def score_position(board, player):
+def score_position(board):
     """Board value heuristics, takes sections from boards rows and 
        passes them to the evaluate function and returns score.
 
     Args:
         board (nested list): gameboard
-        player (int): player whose position we are evaluating
 
     """
     score = 0
 
     # Score horizontal
     for r in range(0, 6):
-        score += evaluate(board[r], player)
+        section = board[r]
+        score += evaluate(section)
 
     # Score vertical
     for c in range(0, 7):
-        col = deque()
+        col = []
         for r in range(0, 6):
-            col.append(board[r][c])
-        score += evaluate(col, player)
+            section = board[r][c]
+            col.append(section)         
+        score += evaluate(col) 
 
     return score
 
 
-def evaluate(section, player):
-    """Evaluates given section for player vs opponent, returns overall score
+def evaluate(section):
+    """Evaluates given section for player vs opponent, returns overall score. 
+       Works by finding matching sequences in the given section.
 
     Args:
         section (list): section of the gameboard
-        player (int): player whose turn we are evaluating
     """
 
     score = 0
-    opp = 2
-    if player == 2:
-        opp = 1
 
-    own_point = 0
-    opp_point = 0
-    free_fields = 0
-
-    for i in section:
-        if i == player:
-            own_point += 1
-        if i == opp:
-            opp_point += 1
-        if i == 0:
-            free_fields += 1
-
-    if own_point == 3 and free_fields > 0:
-        score += 1000
-    if own_point == 2 and free_fields > 1:
-        score += 100
-
-    if opp_point == 3 and free_fields > 0:
-        score -= 1000
-    if opp_point == 2 and free_fields > 1:
-        score -= 100
+    seq_1 = [2,2,0,0], [0,2,2,0], [0,0,2,2], [2,0,0,2]
+    seq_2 = [2,2,2,0], [0,2,2,2], [2,0,2,2], [2,2,0,2]
+    seq_3 = [1,1,0,0], [0,1,1,0], [0,0,1,1], [1,0,0,1]
+    seq_4 = [1,1,1,0], [0,1,1,1], [1,0,1,1], [1,1,0,1]
+    
+    for seq in seq_1:
+        if tuple(seq) in zip(*(section[i:] for i in range(len(seq)))):
+            score += 100
+    for seq in seq_2:
+        if tuple(seq) in zip(*(section[i:] for i in range(len(seq)))):
+            score += 1000
+    for seq in seq_3:
+        if tuple(seq) in zip(*(section[i:] for i in range(len(seq)))):
+            score -= 100
+    for seq in seq_4:
+        if tuple(seq) in zip(*(section[i:] for i in range(len(seq)))):
+            score -= 1000
 
     return score
 
