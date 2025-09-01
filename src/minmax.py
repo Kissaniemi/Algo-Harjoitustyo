@@ -43,7 +43,7 @@ def minmax(board, player, last_move, alpha, beta, max_depth, current_depth, boar
 
     if board_hash in board_cache:
         last_best_move = board_cache[board_hash]
-        if last_best_move[0] >= max_depth-current_depth and last_best_move[1] in columns:
+        if last_best_move[0] >= max_depth-current_depth:
             columns.remove(last_best_move[1])
             columns.insert(0, last_best_move[1])
 
