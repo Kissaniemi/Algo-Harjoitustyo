@@ -186,7 +186,10 @@ Testataan, että pelitilanteessa, missä vastustajalla 3:n suora ja itsellä 3:n
 
 #### test_win_in_4_moves/5_moves/another_win_in_5_moves
 
-Seuraavat testit testaavat että AI on löytänyt voiton useamman siirron päästä ja tekee voittoon johtavat siirrot. Pelitilanteet perustuvat AI:ta vastaan ohjelmalla pelattuihin peleihin ja testeissä simuloidut pelaajan tekemät siirrot ovat pelitilanteessa pelaajan (minun) tekemiä siirtoja, AI:n tekemät siirrot haetaan testeissä joka kerta erikseen minmax funktiolla, jolloin myös testataan että AI ei tee eri valintoja eri testikerroilla, eli sen logiikka ei ole satunnaista.
+Seuraavat testit testaavat että AI on löytänyt voiton useamman siirron päästä ja tekee voittoon johtavat siirrot. Pelitilanteet perustuvat AI:ta vastaan ohjelmalla pelattuihin peleihin ja testeissä simuloidut pelaajan tekemät siirrot ovat pelitilanteessa pelaajan (minun) tekemiä siirtoja, AI:n tekemät siirrot haetaan testeissä joka kerta erikseen minmax funktiolla, jolloin myös testataan että AI ei tee eri valintoja eri testikerroilla, eli sen logiikka ei ole satunnaista. Samalla testataan myös, että saadut pelitilanteiden voittoarvot vastaavat sitä kuinka monta siirtoa voittoon on.
+
+#### test_loss_in_3_moves
+Testaa, että AI näkee häviävänsä väistämättä kuuden (kolmen oman) siirron päästä ja saatu pelitilanteen arvo vastaa tilannetta.
 
 
 
