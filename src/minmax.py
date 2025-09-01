@@ -3,20 +3,18 @@ import time
 
 # preferred order of columns to make a move to
 column_order = [3, 2, 4, 1, 5, 6, 0]
-
+board_cache = {}
 
 def iterative_deepening(board, player, last_move, alpha, beta, turn):
     start_time = time.time()
-    time_limit = 2
-    depth_limit = 43-turn   #43-game turn Maximum depth deepening could (potentially) reach if it had enough time
-    
+    time_limit = 3
+    depth_limit = 43-turn #43-game turn Maximum depth deepening could (potentially) reach if it had enough time
+
     for max_depth in range(1, depth_limit):
-        board_cache = {}
         best_move, value = minmax(
             board, player, last_move, alpha, beta, max_depth, 0, board_cache)
-        
 
-        if time.time() - start_time > time_limit or value == 10000:
+        if time.time() - start_time > time_limit or value > 9980:
             break
 
     print(f"Approximate time taken for move: {time.time() - start_time }s")
@@ -37,30 +35,35 @@ def minmax(board, player, last_move, alpha, beta, max_depth, current_depth, boar
         beta (float/int): beta value for pruning
         max_depth (int): depth limit (most likely never reached)
         current_depth: current depth we are on
+        board_cache: cache of already seen board moves
     """
- 
-    board_hash = hash(str(board))
+    
+    columns = connect.possible_columns(board, column_order)
+    board_hash = str(board)
+
     if board_hash in board_cache:
-        #print("board found")
-        return board_cache[board_hash]
-     
+        last_best_move = board_cache[board_hash]
+        if last_best_move[0] >= max_depth-current_depth and last_best_move[1] in columns:
+            columns.remove(last_best_move[1])
+            columns.insert(0, last_best_move[1])
+
     if last_move is not None:
         if player == 1:
             if connect.check_winner(board, last_move, 2):
-                return (last_move, 10000)
+                return (last_move, 10000-current_depth+1)  # Consider current depth, smaller depth == faster win
         else:
             if connect.check_winner(board, last_move, 1):
-                return (last_move, -10000)
-
-    columns = connect.possible_columns(board, column_order)
-
+                return (last_move, -10000+current_depth)  # Consider current depth, smaller depth == faster loss
+    
+ 
     if current_depth == max_depth or len(columns) == 0:
         if len(columns) == 0:
-            board_cache[board_hash] = (last_move, 0)
             return (last_move, 0)
+
+        value = connect.score_position(board)
         
-        value = connect.score_position(board, player)
-        board_cache[board_hash] = (last_move, value)
+        if player == 1: # check to see if min or max player
+            value = -value
         return (last_move, value)
 
     # Max player
@@ -80,7 +83,9 @@ def minmax(board, player, last_move, alpha, beta, max_depth, current_depth, boar
             alpha = max(alpha, value)
             if alpha >= beta:
                 break
-        board_cache[board_hash] = (best_move, value)
+
+        board_cache[board_hash] = (max_depth - current_depth, best_move)
+
         return (best_move, value)
 
     # Min player
@@ -99,5 +104,7 @@ def minmax(board, player, last_move, alpha, beta, max_depth, current_depth, boar
         beta = min(beta, value)
         if beta <= alpha:
             break
-    board_cache[board_hash] = (best_move, value)
+
+    board_cache[board_hash] = (max_depth - current_depth, best_move)
+ 
     return (best_move, value)
