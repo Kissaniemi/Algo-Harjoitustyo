@@ -16,7 +16,7 @@ def iterative_deepening(board, player, last_move, alpha, beta, turn):
 
         if time.time() - start_time > time_limit or value > 9980:
             break
-
+    #print(board_cache)
     print(f"Approximate time taken for move: {time.time() - start_time }s")
     print(f"Depth reached: {max_depth}/{depth_limit}")
     print(f"Move made to column: {best_move+1}, move value: {value}")
@@ -37,15 +37,14 @@ def minmax(board, player, last_move, alpha, beta, max_depth, current_depth, boar
         current_depth: current depth we are on
         board_cache: cache of already seen board moves
     """
-    
+
     columns = connect.possible_columns(board, column_order)
     board_hash = str(board)
 
-    if board_hash in board_cache:
+    if board_hash in board_cache:      
         last_best_move = board_cache[board_hash]
-        if last_best_move[0] >= max_depth-current_depth:
-            columns.remove(last_best_move[1])
-            columns.insert(0, last_best_move[1])
+        columns.remove(last_best_move)
+        columns.insert(0, last_best_move)
 
     if last_move is not None:
         if player == 1:
@@ -84,7 +83,7 @@ def minmax(board, player, last_move, alpha, beta, max_depth, current_depth, boar
             if alpha >= beta:
                 break
 
-        board_cache[board_hash] = (max_depth - current_depth, best_move)
+        board_cache[board_hash] = best_move
 
         return (best_move, value)
 
@@ -105,6 +104,6 @@ def minmax(board, player, last_move, alpha, beta, max_depth, current_depth, boar
         if beta <= alpha:
             break
 
-    board_cache[board_hash] = (max_depth - current_depth, best_move)
+    board_cache[board_hash] = best_move
  
     return (best_move, value)
