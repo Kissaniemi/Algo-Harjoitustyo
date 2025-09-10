@@ -139,11 +139,12 @@ Funktio alustaa muuttujan score arvoksi 0.
 
 Tämän jälkeen jaetaan pelilauta pystysuoriin ja vaakasuoriin riveihin ja kasvatetaan scorea evaluate funktion palauttamalla arvolla. Ensin silmukassa annetaan pelilaudan rivit evaluate funktiolle pisteytettäväksi ja saatu arvo lisätään score muuttujaan.
 Seuraavaksi silmukassa luodaan pystysuora rivilista johon lisätään pelilaudan sarakkeita riveiksi ja annetaan evaluate funktiolle pisteytettäväksi. Saadut arvot lisätään score muuttujaan. Funktio palauttaa lopulta score arvon.
+Viimeiseksi lasketaan diagonaalit ottammalla pelilauta listalta oikealle nousevat ja vasemmalle laskevat diagonaalit ja antamalla ne evaluate funktiolle pisteytettäväksi.
 
 
 #### evaluate
 Ottaa argumenttina osion ja laskee osiolle arvon.
-Etsii mahdollisia pareja ja kolmen rivejä annetusta osiosta. Laskee plussaa pelaajan 2 merkeistä ja miinusta pelaajan 1 merkeistä. Minmaxin puolella tätä muutetaan sen perusteella ollaanko maximoimassa vai minimoimassa.
+Etsii mahdollisia pareja ja kolmen rivejä annetusta osiosta. Laskee plussaa pelaajan 2 merkeistä ja miinusta pelaajan 1 merkeistä.
 
 
 ### minmax.py
