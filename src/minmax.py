@@ -14,7 +14,7 @@ def iterative_deepening(board, player, last_move, alpha, beta, turn):
         best_move, value = minmax(
             board, player, last_move, alpha, beta, max_depth, 0, board_cache)
 
-        if time.time() - start_time > time_limit or value > 9980:
+        if time.time() - start_time > time_limit or value > 9958:
             break
     #print(board_cache)
     print(f"Approximate time taken for move: {time.time() - start_time }s")
