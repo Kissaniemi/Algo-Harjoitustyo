@@ -61,8 +61,6 @@ def minmax(board, player, last_move, alpha, beta, max_depth, current_depth, boar
 
         value = connect.score_position(board)
         
-        if player == 1: # check to see if min or max player
-            value = -value
         return (last_move, value)
 
     # Max player
