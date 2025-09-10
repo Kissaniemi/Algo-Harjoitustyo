@@ -151,15 +151,15 @@ Etsii mahdollisia pareja ja kolmen rivejä annetusta osiosta. Laskee plussaa pel
 
 #### iterative_deepening
 Funktio ottaa argumentteina pelilaudan, pelaajan numeron sekä alpha- ja beta-arvon.
-Funktiossa asetetaan ensin aloitusaika start_time, aikaraja time_limit 2 sekuntia ja maksimisyvyys depth_limit rajaksi 43 (tähän syvyyteen ei tämän hetkisillä optimoinneilla koskaan päästä, mutta hyvä olla jokin maksimiraja).
+Funktiossa asetetaan ensin aloitusaika start_time, aikaraja time_limit 3 sekuntia ja maksimisyvyys depth_limit rajaksi 43 (tähän syvyyteen ei tämän hetkisillä optimoinneilla koskaan päästä, mutta hyvä olla jokin maksimiraja).
 Sen jälkeen silmukassa kutsutaan syvyydestä yksi maksimiisyvyyteen asti minmax_funktiota ja parasta siirtoa ja sen arvoa.
-Jos minmax funktion kutsunnan jälkeen aikaraja on ylittynyt (aikaraja siis yleensä menee yli kahden sekunnin, koska aikaraja tarkistusta ei tehdä minmax funktion sisällä vaan sen kutsunnan jälkeen) tai siirron arvo on 10000 (voittoarvo), pysäytetään silmukka.
+Jos minmax funktion kutsunnan jälkeen aikaraja on ylittynyt (aikaraja siis yleensä menee yli kolmen sekunnin, koska aikaraja tarkistusta ei tehdä minmax funktion sisällä vaan sen kutsunnan jälkeen) tai siirron arvo on yli 9958 (voittoarvo 10000-siirtojen määrä ennen voittoa. 42 on maksimi siirtojen määrä laudalla)
 Tämä jälkeen tulostetaan näkyviin tietoja siitä kauan aikaa suunnilleen siirron tekemiseen meni, mihin syvyyteen lopetettiin ja mikä siirto ja sen arvo on.
 
 #### minmax
 Funktio ottaa argumentteina pelilaudan, pelaajan numeron, edellisen pelaajan siirron, alpha- ja beta-arvon, sekä maksimisyvyyden rajan ja tämän hetkisen syvyyden ja välimuistin.
 Funktio tarkistaa ensin löytyykö kyseinen pelitilanne välimuistista ja jos löytyy, siirtää silloisen parhaan siirron siirtolistassa ensimmäiseksi.
-Funkti otarkistaa sitten, ettei edellisen pelaajan siirto johtanut voittoon tai häviöön ja jos johti niin palautetaan sen mukainen arvo.
+Funktio tarkistaa sitten, ettei edellisen pelaajan siirto johtanut voittoon tai häviöön ja jos johti niin palautetaan sen mukainen arvo.
 
 Tämän jälkeen funktio hakee mahdolliset siirrot possible_columns funktiolla.
 Funktio tarkistaa sitten että tämän hetkinen syvyys ei ole maksimisyvyys, ja että mahdollisia siirtoja on eli sarakelista ei ole tyhjä. Muutoin se hakee score_position funktiolla tämän hetkiselle pelitilanteelle arvon ja palauttaa sen edellisen siirron kanssa.
