@@ -298,28 +298,33 @@ class TestConnect(unittest.TestCase):
 
         move, value = iterative_deepening(
             board, 2, 5, -1000000, 1000000, 21)
-        board[1][move] = 2
-        self.assertEqual(5, move)
+        board[5][move] = 2
+        self.assertEqual(6, move)
         self.assertEqual(9992 ,value)
 
-
-        board[0][5] = 1  # Opponents (players) move
-
+        board[5][0] = 1  # Opponents (players) move
+        
         move, value = iterative_deepening(
-            board, 2, 5, -1000000, 1000000, 23)
-        board[5][move] = 2
+            board, 2, 0, -1000000, 1000000, 23)
+        board[4][move] = 2
         self.assertEqual(6, move)
         self.assertEqual(9994,value)
 
-
-        board[4][6] = 1  # Opponents (players) move
+        board[4][0] = 1  # Opponents (players) move
 
         move, value = iterative_deepening(
-            board, 2, 6, -1000000, 1000000, 25)
+            board, 2, 0, -1000000, 1000000, 25)
+        board[1][move] = 2
+        self.assertEqual(5, move)
+        self.assertEqual(9996 ,value)
+        
+        board[0][5] = 1  # Opponents (players) move
+
+        move, value = iterative_deepening(
+            board, 2, 4, -1000000, 1000000, 25)
         board[3][move] = 2
         self.assertEqual(6, move)
         self.assertEqual(9998 ,value)
-
 
         board[2][6] = 1  # Opponents (players) move
 
@@ -341,8 +346,8 @@ class TestConnect(unittest.TestCase):
         
         move, value = iterative_deepening(
             board, 2, 1, -1000000, 1000000, 15)
-        board[3][move] = 2
-        self.assertEqual(4, move)
+        board[2][move] = 2
+        self.assertEqual(2, move)
         self.assertEqual(9992 ,value)
         
         board[3][1] = 1  # Opponents (players) move
@@ -353,28 +358,28 @@ class TestConnect(unittest.TestCase):
         self.assertEqual(1, move)
         self.assertEqual(9994 ,value)
 
-        board[5][0] = 1  # Opponents (players) move
-
-        move, value = iterative_deepening(
-            board, 2, 4, -1000000, 1000000, 21)
-        board[4][move] = 2
-        self.assertEqual(0, move)
-        self.assertEqual(9996 ,value)
- 
-        board[2][2] = 1  # Opponents (players) move
+        board[1][1] = 1  # Opponents (players) move
         
         move, value = iterative_deepening(
-            board, 2, 2, -1000000, 1000000, 21)
+            board, 2, 1, -1000000, 1000000, 21)
         board[1][move] = 2
         self.assertEqual(2, move)
-        self.assertEqual(9998 ,value)
-
-        board[4][5] = 1  # Opponents (players) move
+        self.assertEqual(9996 ,value)
+ 
+        board[0][2] = 1  # Opponents (players) move
 
         move, value = iterative_deepening(
-            board, 2, 5, -1000000, 1000000, 23)
+            board, 2, 2, -1000000, 1000000, 21)
         board[3][move] = 2
-        self.assertEqual(5, move)
+        self.assertEqual(4, move)
+        self.assertEqual(9998 ,value)
+
+        board[0][1] = 1  # Opponents (players) move
+
+        move, value = iterative_deepening(
+            board, 2, 1, -1000000, 1000000, 23)
+        board[2][move] = 2
+        self.assertEqual(4, move)
         self.assertEqual(10000,value)
 
         self.assertEqual(True, check_winner(board, 5, 2))
